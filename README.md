@@ -1,6 +1,6 @@
 # Master Duel Deck Suggestions (Yu-Gi-Oh!)
 
-## Get all possible types of Master Duel deck suggestions based on the cards you own in-game
+## Get All Possible Types of Master Duel Deck Suggestions Based on Cards You Own In-Game
 
 ### Features
 - Suggests whether it's possible to build different, popular, or fun deck archetypes played by other users using the cards you own. This way, you can have more fun playing other decks without spending any extra points or money.
