@@ -5,9 +5,8 @@ from PIL import Image
 from pytesseract import pytesseract
 from helpers import logger, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
-import time
 
-path_to_tesseract = f"C:/Users/UserName/AppData/Local/Tesseract-OCR/tesseract.exe" # tesseract.exe path
+path_to_tesseract = f"C:/Users/UserName/AppData/Local/Tesseract-OCR/tesseract.exe"
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -27,18 +26,18 @@ def text_to_image_match(name):
     logger.debug(f"extracted text: {text}")
     logger.debug(f"match result: {name == text or text in name}")
 
-    if name == text or text in name: # check if partial text exists in name
+    if name == text or text in name: # also checks if text partially matches with the name
        return True
     return False
 
-def validate_select(name, repeat=0, dx=0): # dx move along x-axis
+def validate_select(name, repeat=0, dx=0): # dx -> movement along x-axis
     take_title_screenshot(name)
 
     if text_to_image_match(name):  
         return True
 
     repeat = repeat + 1
-    if repeat == 3: # max repeat limit 5.
+    if repeat == 3: # max repeat limit 5
         return False
     
     dx = dx + select_region_coords_delta["x"]
@@ -57,21 +56,20 @@ def get_card_owned_info(card_info):
     for card in card_info:
         name = card["name"].strip().lower()
 
-        # ui operations
         move_to_search()
         type_name_enter(name)
         move_to_select(duration=2)
 
         if validate_select(name):
             take_screenshot(name)
-            # process more information for card_owned
+            # need to process more for card_owned info
         else:
             logger.debug(f"screenshot not taken. no image title match found for the card: '{name}'")
 
     return card_owned
 
 def take_title_screenshot(name):
-    pyautogui.screenshot(f"{CARD_IMAGE_DATA_PATH}/title_{name}.png", region=(title_region_coords["x"], title_region_coords["y"], title_region_size["width"], title_region_size["height"])) # might need to update based on pc resolution. default 1920 x 1080
+    pyautogui.screenshot(f"{CARD_IMAGE_DATA_PATH}/title_{name}.png", region=(title_region_coords["x"], title_region_coords["y"], title_region_size["width"], title_region_size["height"])) # might need to change based on screen resolution (default: 1920x1080)
 
 def take_screenshot(name):
     pyautogui.screenshot(f"{CARD_IMAGE_DATA_PATH}/{name}.png")
@@ -81,17 +79,14 @@ def type_name_enter(name):
     pyautogui.press("enter")
 
 def move_to_select(dx=0, dy=0, duration=0):
-    # move to searched card to select
-    pyautogui.moveTo(select_region_coords["x"] + dx, select_region_coords["y"] + dy, duration = duration) # takes more time to load cards based on search
+    pyautogui.moveTo(select_region_coords["x"] + dx, select_region_coords["y"] + dy, duration = duration) # added a duration delay since loading cards based on search takes more time
     pyautogui.click()
     
 def move_to_search(duration=0):
-    # move to search
     pyautogui.moveTo(search_region_coords["x"], search_region_coords["y"], duration = duration)
     pyautogui.click()
 
 def switch_window():
-    # switch to masterduel game window
     handle = pygetwindow.getWindowsWithTitle('masterduel')
     if handle:
         handle[0].activate()
@@ -103,7 +98,7 @@ def main():
 
     if card_info:
         switch_window()
-        makedirs(CARD_IMAGE_DATA_PATH) # create dir to store processed card images
+        makedirs(CARD_IMAGE_DATA_PATH) # make dir to store processed card images
         card_owned_info = get_card_owned_info(card_info)
         logger.debug(f"card owned info: {card_owned_info}")
 
