@@ -105,4 +105,7 @@ def main():
     else: logger.debug(f"card info is not available in the {CARD_INFO_DATA_PATH} file")
 
 if __name__ == '__main__':
-    main()
+    try:
+      main()
+    except Exception as e:
+      logger.exception(e)
