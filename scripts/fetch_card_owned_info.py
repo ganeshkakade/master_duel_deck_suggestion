@@ -3,7 +3,7 @@ import pyautogui
 import pygetwindow
 from PIL import Image
 from pytesseract import pytesseract
-from helpers import logger, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
+from helpers import logger, normalize_filename, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
 
 path_to_tesseract = f"C:/Users/UserName/AppData/Local/Tesseract-OCR/tesseract.exe"
@@ -20,7 +20,7 @@ def image_to_text_match(name):
     
     image = Image.open(image_path)
     pytesseract.tesseract_cmd = path_to_tesseract
-    text = pytesseract.image_to_string(image).strip().lower()
+    text = normalize_filename(pytesseract.image_to_string(image))
 
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
@@ -54,7 +54,7 @@ def get_card_owned_info(card_info):
     card_owned = []
 
     for card in card_info:
-        name = card["name"].strip().lower()
+        name = normalize_filename(card["name"])
 
         move_to_search()
         type_name_enter(name)

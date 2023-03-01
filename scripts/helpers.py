@@ -1,6 +1,7 @@
 import os
 import logging
 import pyautogui
+import re
 from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
 
 # create and configure logger
@@ -16,6 +17,13 @@ size = pyautogui.size()
 
 w_size_ratio = size.width / FIXED_SCREEN_SIZE["width"]
 h_size_ratio = size.height / FIXED_SCREEN_SIZE["height"]
+
+def normalize_filename(filename):
+    return (
+        re.sub(r'[^\w\s-]', '', filename)
+        .strip()
+        .lower()
+    )
 
 def makedirs(path):
     if not os.path.exists(path):

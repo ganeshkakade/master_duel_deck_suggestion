@@ -27,4 +27,7 @@ def main():
         json_file.write(json.dumps(card_info()))
 
 if __name__ == '__main__':
-    main()
+    try:
+      main()
+    except Exception as e:
+      logger.exception(e)
