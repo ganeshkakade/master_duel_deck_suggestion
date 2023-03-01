@@ -5,7 +5,7 @@
 ### Features
 - Suggests whether it's possible to build different, popular, or fun deck archetypes played by other users using the cards you own. This way, you can have more fun playing other decks without spending any extra points or money.
 - Provides information on which cards you don't own in order to build the standard deck of that archetype from the suggestions.
-- Provides information on whether you can dismantle extra cards for more UR/SR/R/N points (ignoring the rarity of cards. Some might want to keep rather plain foil cards than royal/rare cards for exchange of points).
+- Provides information on whether you can dismantle extra cards for more UR/SR/R/N points (ignoring the rarity of cards. Some might want to keep rather plain foil cards than royal/rare cards for exchange of points). Additionally, informs if you have extra limited/banned cards that can be dismantled.
 
 ### Keep in mind
 - Before running the scripts, make sure to install the required dependencies for the Python libraries used in scripts.

@@ -15,7 +15,7 @@ select_region_coords_delta = get_region_coords(SELECT_COORDS_DELTA)
 title_region_size = get_region_size(TITLE_SIZE)
 title_region_coords = get_region_coords(TITLE_COORDS)
 
-def text_to_image_match(name):
+def image_to_text_match(name):
     image_path = f"{CARD_IMAGE_DATA_PATH}/title_{name}.png"
     
     image = Image.open(image_path)
@@ -33,7 +33,7 @@ def text_to_image_match(name):
 def validate_select(name, repeat=0, dx=0): # dx -> movement along x-axis
     take_title_screenshot(name)
 
-    if text_to_image_match(name):  
+    if image_to_text_match(name):  
         return True
 
     repeat = repeat + 1
