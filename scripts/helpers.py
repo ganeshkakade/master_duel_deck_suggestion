@@ -5,8 +5,8 @@ from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
 
 # create and configure logger
 logging.basicConfig(filename="../debug.log",
-                    format='%(asctime)s %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S',
+                    format="%(asctime)s %(message)s",
+                    datefmt="%Y-%m-%d %H:%M:%S",
                     filemode='w',
                     level=logging.DEBUG)
 
