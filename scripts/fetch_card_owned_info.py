@@ -2,7 +2,9 @@ import json
 import pyautogui
 import pygetwindow
 from helpers import logger, normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
-from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
+from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS
+import time
+# import timing
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -11,8 +13,14 @@ select_region_coords_delta = get_region_coords(SELECT_COORDS_DELTA)
 title_region_size = get_region_size(TITLE_SIZE)
 title_region_coords = get_region_coords(TITLE_COORDS)
 
+select_detail_region_coords = get_region_coords(DETAIL_COORDS)
+close_region_coords = get_region_coords(CLOSE_COORS)
+
 def image_to_text_match(card):
+    move_to_select_detail() # open card detail
+    time.sleep(0.5) # wait for detail window to open
     image_path = take_title_screenshot(card)
+    close_detail() # close card detail
     
     name = normalize_str(card['name'])
     text = normalize_str(preprocess_and_ocr_image(image_path))
@@ -26,13 +34,13 @@ def image_to_text_match(card):
     return False
 
 def validate_select(card, repeat=0, dx=0): # dx -> movement along x-axis
-    if image_to_text_match(card):  
+    if image_to_text_match(card):
         return True
 
     repeat = repeat + 1
     if repeat == 5: # max repeat limit 5. tried to brute force match
         return False
-    
+
     dx = dx + select_region_coords_delta['x']
     move_to_select(dx)
     return validate_select(card, repeat, dx)
@@ -77,8 +85,16 @@ def move_to_select(dx=0, dy=0, duration=0):
     pyautogui.moveTo(select_region_coords['x'] + dx, select_region_coords['y'] + dy, duration = duration) # added a duration delay since loading cards based on search takes more time
     pyautogui.click()
     
-def move_to_search(duration=0):
-    pyautogui.moveTo(search_region_coords['x'], search_region_coords['y'], duration = duration)
+def move_to_search():
+    pyautogui.moveTo(search_region_coords['x'], search_region_coords['y'])
+    pyautogui.click()
+
+def move_to_select_detail():
+    pyautogui.moveTo(select_detail_region_coords['x'], select_detail_region_coords['y'])
+    pyautogui.click()
+
+def close_detail():
+    pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
     pyautogui.click()
 
 def switch_window():

@@ -25,42 +25,27 @@ h_size_ratio = size.height / FIXED_SCREEN_SIZE['height']
 basewidth = 800
 
 def preprocess_and_ocr_image(image_path):
-    image = Image.open(image_path)
+    # load the image
+    img = Image.open(image_path)
 
-    # rescale the image to a fixed width of 800 pixels
-    wpercent = (basewidth / float(image.size[0]))
-    hsize = int((float(image.size[1]) * float(wpercent)))
-    image = image.resize((basewidth, hsize), Image.ANTIALIAS)
+    # enhance the image for better OCR accuracy
+    enhancer = ImageEnhance.Sharpness(img)
+    img = enhancer.enhance(2)
+    img = img.convert('L')
 
-    # apply Gaussian blur to smooth out the image
-    blur_radius = 2
-    image = image.filter(ImageFilter.GaussianBlur(radius=blur_radius))
+    # apply thresholding to convert the image to black and white
+    threshold = 128
+    img = img.point(lambda x: 255 if x > threshold else 0)
 
-    # convert the image to grayscale
-    gray = image.convert('L')
+    # apply image filter to remove noise
+    img = img.filter(ImageFilter.MedianFilter())
 
-    # apply binary thresholding
-    threshold_value = 200
-    threshold_img = gray.point(lambda x: 0 if x < threshold_value else 255, '1')
+    # apply image filter to enhance text
+    img = img.filter(ImageFilter.MedianFilter())
+    img = img.filter(ImageFilter.SHARPEN)
 
-    # apply dilation to thicken the characters
-    dilated_img = threshold_img.filter(ImageFilter.MaxFilter(size=3))
-
-    # apply erosion to remove noise from the image
-    eroded_img = dilated_img.filter(ImageFilter.MinFilter(size=3))
-
-    # convert image to "RGB" mode
-    rgb_img = eroded_img.convert('RGB')
-
-    # apply sharpening
-    sharpen_factor = 2
-    enhancer = ImageEnhance.Sharpness(rgb_img)
-    sharpened_img = enhancer.enhance(sharpen_factor)
-
-    # Convert image back to "L" mode
-    final_img = sharpened_img.convert('L')
-
-    text = pytesseract.image_to_string(final_img)
+    # extract text using tesseract
+    text = pytesseract.image_to_string(img)
 
     return text
 

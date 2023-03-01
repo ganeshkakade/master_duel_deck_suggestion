@@ -6,5 +6,8 @@ SEARCH_COORDS = {'x': 1520, 'y': 205}
 SELECT_COORDS = {'x': 1360, 'y': 380}
 SELECT_COORDS_DELTA = {'x': 90, 'y': 145}
 
-TITLE_SIZE = {'width': 335, 'height': 30}
-TITLE_COORDS = {'x': 50, 'y': 125}
+TITLE_SIZE = {'width': 1050, 'height': 40}
+TITLE_COORDS = {'x': 640, 'y': 155}
+
+DETAIL_COORDS = {'x': 130, 'y': 300}
+CLOSE_COORS = {'x': 1855, 'y': 60}
