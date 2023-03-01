@@ -9,7 +9,7 @@
 
 ### Keep in mind
 - Before running the scripts, make sure to install the required dependencies for the Python libraries used in scripts.
-- Additionally, install Tesseract-OCR and take note of its installation path. Need to replace that path in ```fetch_card_owned_info.py``` file.
+- Additionally, install Tesseract-OCR(3.2) and take note of its installation path. Need to replace that path in ```fetch_card_owned_info.py``` file.
 - To run the .py files, use Python and follow the steps provided to obtain the results.
 - Keep in mind that some of the scripts may require GUI automation to gather cards information. When executing these scripts, make sure not to interfere with the UI.
 - Keep in mind that the process may take a while to gather and process all the required data. Moreover, it's important to note that this tool is only supported on Windows.
