@@ -15,12 +15,12 @@ logger = logging.getLogger()
 
 size = pyautogui.size()
 
-w_size_ratio = size.width / FIXED_SCREEN_SIZE["width"]
-h_size_ratio = size.height / FIXED_SCREEN_SIZE["height"]
+w_size_ratio = size.width / FIXED_SCREEN_SIZE['width']
+h_size_ratio = size.height / FIXED_SCREEN_SIZE['height']
 
-def normalize_filename(filename):
+def normalize_str(str):
     return (
-        re.sub(r'[^\w\s-]', '', filename)
+        re.sub(r'[^\w\s-]', '', str)
         .strip()
         .lower()
     )
@@ -37,14 +37,14 @@ def getfilesize(path):
     return os.stat(path).st_size
 
 def get_region_coords(coords):
-    dx = w_size_ratio * coords["x"]
-    dy = h_size_ratio * coords["y"]
+    dx = w_size_ratio * coords['x']
+    dy = h_size_ratio * coords['y']
 
-    return {"x": dx, "y": dy}
+    return {'x': dx, 'y': dy}
 
 def get_region_size(size):
-    w = w_size_ratio * size["width"]
-    h = h_size_ratio * size["height"]
+    w = w_size_ratio * size['width']
+    h = h_size_ratio * size['height']
     
-    return {"width": w, "height": h}
+    return {'width': w, 'height': h}
     

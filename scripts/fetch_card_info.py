@@ -23,7 +23,7 @@ def card_info(result=[], page=1):
     return card_info(result, page)
 
 def main():
-    with safe_open(CARD_INFO_DATA_PATH, "w") as json_file:
+    with safe_open(CARD_INFO_DATA_PATH, 'w') as json_file:
         json_file.write(json.dumps(card_info()))
 
 if __name__ == '__main__':
