@@ -1,119 +1,113 @@
-import os
-import pyautogui
 import json
+import pyautogui
 import pygetwindow
 from PIL import Image
 from pytesseract import pytesseract
-import logging
+from helpers import logger, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
+from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
+import time
 
-# Create and configure logger
-logging.basicConfig(filename="debug.log",
-                    format='%(asctime)s %(message)s',
-                    filemode='w')
-# Creating an object
-logger = logging.getLogger()
-# Setting the threshold of logger to DEBUG
-logger.setLevel(logging.DEBUG)
+path_to_tesseract = f"C:/Users/UserName/AppData/Local/Tesseract-OCR/tesseract.exe" # tesseract.exe path
 
-path_to_tesseract = r"C:\Users\User\AppData\Local\Programs\Tesseract-OCR\tesseract.exe" # tesseract.exe path
+search_region_coords = get_region_coords(SEARCH_COORDS)
+select_region_coords = get_region_coords(SELECT_COORDS)
+select_region_coords_delta = get_region_coords(SELECT_COORDS_DELTA)
+
+title_region_size = get_region_size(TITLE_SIZE)
+title_region_coords = get_region_coords(TITLE_COORDS)
 
 def text_to_image_match(name):
-    image_path = f"./card_image_data/title_{name}.png"
+    image_path = f"{CARD_IMAGE_DATA_PATH}/title_{name}.png"
     
-    # Opening the image & storing it in an image object
     image = Image.open(image_path)
-    
-    # Providing the tesseract executable
-    # location to pytesseract library
     pytesseract.tesseract_cmd = path_to_tesseract
-    
-    # Passing the image object to image_to_string() function
-    # This function will extract the text from the image
     text = pytesseract.image_to_string(image).strip().lower()
 
-    logger.debug(name)
-    logger.debug(text)
-    logger.debug(len(name))
-    logger.debug(len(text))
+    logger.debug(f"card name: {name}")
+    logger.debug(f"extracted text: {text}")
+    logger.debug(f"match result: {name == text or text in name}")
 
-    if(name == text or text in name):
+    if name == text or text in name: # check if partial text exists in name
        return True
     return False
 
-def validate_select(name, repeat=0):
+def validate_select(name, repeat=0, dx=0): # dx move along x-axis
     take_title_screenshot(name)
 
-    if(text_to_image_match(name) or repeat == 2): # max repeat limit 4 
+    if text_to_image_match(name):  
         return True
-    else:
-        repeat = repeat + 1
-        move_to_select(dx=85)
-        validate_select(name, repeat)
-    return False
 
-def read_card_info_from_file():
-    file = open('card_info_data.json')
-    data = json.load(file)
-    file.close()
-    return data
+    repeat = repeat + 1
+    if repeat == 3: # max repeat limit 5.
+        return False
+    
+    dx = dx + select_region_coords_delta["x"]
+    move_to_select(dx)
+    return validate_select(name, repeat, dx)
+
+def get_card_info_from_file():
+    with safe_open(CARD_INFO_DATA_PATH) as json_file:
+        if getfilesize(CARD_INFO_DATA_PATH) > 0:
+            return json.load(json_file)
+    return []
 
 def get_card_owned_info(card_info):
     card_owned = []
 
     for card in card_info:
-        name = card.get("name").strip().lower()
+        name = card["name"].strip().lower()
 
+        # ui operations
         move_to_search()
         type_name_enter(name)
-        move_to_select()
+        move_to_select(duration=2)
 
-        if(validate_select(name)):
-            take_screenshot(name) 
-            # process more information from taken screenshot
+        if validate_select(name):
+            take_screenshot(name)
+            # process more information for card_owned
         else:
-            logger.debug(f"screenshot not taken. no image match found for the card name '{name}'")
+            logger.debug(f"screenshot not taken. no image title match found for the card: '{name}'")
 
     return card_owned
 
 def take_title_screenshot(name):
-    pyautogui.screenshot(f"./card_image_data/title_{name}.png", region=(82, 153, 330, 25)) # this need to change based on pc resolution. default 1920 x 1080
+    pyautogui.screenshot(f"{CARD_IMAGE_DATA_PATH}/title_{name}.png", region=(title_region_coords["x"], title_region_coords["y"], title_region_size["width"], title_region_size["height"])) # might need to update based on pc resolution. default 1920 x 1080
 
 def take_screenshot(name):
-    pyautogui.screenshot(f"./card_image_data/{name}.png")
+    pyautogui.screenshot(f"{CARD_IMAGE_DATA_PATH}/{name}.png")
 
 def type_name_enter(name):
     pyautogui.typewrite(name)
     pyautogui.press("enter")
 
-def move_to_select(x=1350, y=400, dx=0, dy=0):
+def move_to_select(dx=0, dy=0, duration=0):
     # move to searched card to select
-    pyautogui.moveTo(x + dx, y + dy, duration = 1.5) # needs more time to load cards based on search
+    pyautogui.moveTo(select_region_coords["x"] + dx, select_region_coords["y"] + dy, duration = duration) # takes more time to load cards based on search
     pyautogui.click()
     
-def move_to_search(x=1530, y=230):
+def move_to_search(duration=0):
     # move to search
-    pyautogui.moveTo(x, y)
+    pyautogui.moveTo(search_region_coords["x"], search_region_coords["y"], duration = duration)
     pyautogui.click()
 
 def switch_window():
-    # switch to masterduel window
-    handle = pygetwindow.getWindowsWithTitle('masterduel')[0]
-    handle.activate()
-    handle.maximize()
+    # switch to masterduel game window
+    handle = pygetwindow.getWindowsWithTitle('masterduel')
+    if handle:
+        handle[0].activate()
+        handle[0].maximize()
 
-def create_dir(path):
-    if not os.path.exists(path):
-        os.makedirs(path)
+def main():
+    card_owned_info = []
+    card_info = get_card_info_from_file()
+
+    if card_info:
+        switch_window()
+        makedirs(CARD_IMAGE_DATA_PATH) # create dir to store processed card images
+        card_owned_info = get_card_owned_info(card_info)
+        logger.debug(f"card owned info: {card_owned_info}")
+
+    else: logger.debug(f"card info is not available in the {CARD_INFO_DATA_PATH} file")
 
 if __name__ == '__main__':
-    card_owned_info = []
-    card_info = read_card_info_from_file()
-
-    create_dir("./card_image_data")
-    create_dir("./card_match_data/")
-
-    switch_window() 
-
-    if(card_info): 
-        card_owned_info = get_card_owned_info(card_info)
-        logger.debug(card_owned_info)
+    main()

@@ -3,18 +3,18 @@
 import requests
 import json
 from helpers import logger, safe_open
+from constants import CARD_INFO_DATA_PATH
 
 def card_info(result=[], page=1):
     logger.debug(f"page: {page}")
-    
 
     response = requests.get(f"https://www.masterduelmeta.com/api/v1/cards?cardSort=popRank&aggregate=search&page={page}&limit=2500")
     response.raise_for_status()
     responseJSON = response.json()
 
-    if(not responseJSON):
+    if not responseJSON:
         return result
-
+    
     page = page + 1
     result = result + responseJSON
 
@@ -22,6 +22,9 @@ def card_info(result=[], page=1):
 
     return card_info(result, page)
 
-if __name__ == '__main__':
-    with safe_open("../data/card_info_data.json", "w") as json_file:
+def main():
+    with safe_open(CARD_INFO_DATA_PATH, "w") as json_file:
         json_file.write(json.dumps(card_info()))
+
+if __name__ == '__main__':
+    main()

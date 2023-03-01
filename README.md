@@ -16,7 +16,7 @@
 
 ### Steps
 1. Run ```fetch_card_info.py``` to get all updated cards information in ```card_info_data.json``` file.
-2. Manually open ```Yu-Gi-Oh! Master Duel``` application, go to ```Game Settings -> General```, set Resolution to 1920 x 1080 and View Mode to Window Mode. (Set PC screen resolution to 1920 x 1080 otherwise changes might need to be made within code for accuracy).
+2. Manually open ```Yu-Gi-Oh! Master Duel``` application, go to ```Game Settings -> General```, set Resolution to 1920 x 1080 and View Mode to Full Screen Mode. (Set PC screen resolution to 1920 x 1080 otherwise changes might need to be made within code for accuracy).
 3. Go to ```Decks```, select ```Create New Deck -> Create New```, and set Sort filter to ```Number Owned``` in descending order.
 4. Run ```fetch_card_owned_info.py``` to get information on all cards owned by you, which will help suggest possible decks to build.
 
