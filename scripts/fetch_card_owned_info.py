@@ -6,7 +6,7 @@ from pytesseract import pytesseract
 from helpers import logger, normalize_str, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
 
-path_to_tesseract = f"C:/Users/Ganesh Kakade/AppData/Local/Tesseract-OCR/tesseract.exe"
+path_to_tesseract = f"C:/Users/Ganesh Kakade/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -21,7 +21,7 @@ def image_to_text_match(card):
     image = Image.open(image_path)
     pytesseract.tesseract_cmd = path_to_tesseract
 
-    text = normalize_str(pytesseract.image_to_string(image, config=r'--oem 3 --psm 6'))
+    text = normalize_str(pytesseract.image_to_string(image))
     name = normalize_str(card['name'])
 
     logger.debug(f"card name: {name}")

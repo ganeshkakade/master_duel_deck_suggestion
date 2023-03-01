@@ -24,7 +24,7 @@ def card_info(result=[], page=1):
 
 def main():
     with safe_open(CARD_INFO_DATA_PATH, 'w') as json_file:
-        json_file.write(json.dumps(card_info()))
+        json_file.write(json.dumps(card_info(), indent=4))
 
 if __name__ == '__main__':
     try:
