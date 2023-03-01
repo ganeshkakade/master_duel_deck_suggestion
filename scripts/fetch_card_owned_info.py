@@ -1,12 +1,8 @@
 import json
 import pyautogui
 import pygetwindow
-from PIL import Image
-from pytesseract import pytesseract
-from helpers import logger, normalize_str, makedirs, safe_open, getfilesize, get_region_coords, get_region_size
+from helpers import logger, normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS
-
-path_to_tesseract = f"C:/Users/Ganesh Kakade/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -18,17 +14,14 @@ title_region_coords = get_region_coords(TITLE_COORDS)
 def image_to_text_match(card):
     image_path = take_title_screenshot(card)
     
-    image = Image.open(image_path)
-    pytesseract.tesseract_cmd = path_to_tesseract
-
-    text = normalize_str(pytesseract.image_to_string(image))
     name = normalize_str(card['name'])
+    text = normalize_str(preprocess_and_ocr_image(image_path))
 
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
-    logger.debug(f"match result: {name == text or text in name}")
+    logger.debug(f"match result: {len(text) > 0 and (text == name or text in name)}")
 
-    if name == text or text in name: # also checks if text partially matches with the name
+    if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with the name
        return True
     return False
 
@@ -37,7 +30,7 @@ def validate_select(card, repeat=0, dx=0): # dx -> movement along x-axis
         return True
 
     repeat = repeat + 1
-    if repeat == 3: # max repeat limit 5
+    if repeat == 5: # max repeat limit 5. tried to brute force match
         return False
     
     dx = dx + select_region_coords_delta['x']
