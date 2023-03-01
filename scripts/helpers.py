@@ -22,8 +22,6 @@ size = pyautogui.size()
 w_size_ratio = size.width / FIXED_SCREEN_SIZE['width']
 h_size_ratio = size.height / FIXED_SCREEN_SIZE['height']
 
-basewidth = 800
-
 def preprocess_and_ocr_image(image_path):
     # load the image
     img = Image.open(image_path)

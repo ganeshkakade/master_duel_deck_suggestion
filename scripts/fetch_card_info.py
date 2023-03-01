@@ -4,8 +4,7 @@ import requests
 import json
 from helpers import logger, safe_open
 from constants import CARD_INFO_DATA_PATH
-# import time
-# import timing
+import timing
 
 def card_info(result=[], page=1):
     logger.debug(f"page: {page}")

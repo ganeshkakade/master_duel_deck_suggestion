@@ -4,7 +4,7 @@ import pygetwindow
 from helpers import logger, normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS
 import time
-# import timing
+import timing
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -18,9 +18,10 @@ close_region_coords = get_region_coords(CLOSE_COORS)
 
 def image_to_text_match(card):
     move_to_select_detail() # open card detail
+    
     time.sleep(0.5) # wait for detail window to open
+    
     image_path = take_title_screenshot(card)
-    close_detail() # close card detail
     
     name = normalize_str(card['name'])
     text = normalize_str(preprocess_and_ocr_image(image_path))
@@ -28,6 +29,8 @@ def image_to_text_match(card):
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
     logger.debug(f"match result: {len(text) > 0 and (text == name or text in name)}")
+
+    close_detail() # close card detail
 
     if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with the name
        return True
@@ -60,7 +63,8 @@ def get_card_owned_info(card_info):
         move_to_select(duration=2)
 
         if validate_select(card):
-            take_screenshot(card)
+            pass
+            # take_screenshot(card)
             # need to process more for card_owned info
         else:
             logger.debug(f"screenshot not taken. no image title match found for the card: {card['name']}")
