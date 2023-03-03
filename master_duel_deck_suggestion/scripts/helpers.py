@@ -4,12 +4,12 @@ import pyautogui
 import re
 from PIL import Image, ImageFilter, ImageEnhance
 from pytesseract import pytesseract
-from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
+from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS, DEBUG_LOG_PATH
 
 pytesseract.tesseract_cmd = f"C:/Users/Ganesh Kakade/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
 # create and configure logger
-logging.basicConfig(filename="../../debug.log",
+logging.basicConfig(filename=DEBUG_LOG_PATH,
                     format="%(asctime)s %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
                     filemode='w',
