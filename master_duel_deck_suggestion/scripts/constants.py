@@ -1,6 +1,3 @@
-DEBUG_LOG_PATH = "../../debug.log"
-DEFECT_LOG_PATH  = "../../defect.log"
-
 CARD_INFO_DATA_PATH = "../data/card_info.json"
 CARD_IMAGE_DATA_PATH = "../data/card_images"
 

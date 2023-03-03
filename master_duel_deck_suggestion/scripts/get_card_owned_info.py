@@ -1,9 +1,14 @@
 import json
 import pyautogui
 import pygetwindow
-from helpers import logger, normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
+from helpers import normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
+from master_duel_deck_suggestion.dev.logging import logger
 from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS
 import time
+
+scripts_dir = os.path.dirname(os.path.abspath(__file__))
+CARD_INFO_DATA_PATH = os.path.join(scripts_dir, CARD_INFO_DATA_PATH)
+CARD_IMAGE_DATA_PATH = os.path.join(scripts_dir, CARD_IMAGE_DATA_PATH)
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)

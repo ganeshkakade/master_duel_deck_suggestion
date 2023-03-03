@@ -2,8 +2,12 @@
 
 import requests
 import json
-from helpers import logger, safe_open
+from helpers import safe_open
+from master_duel_deck_suggestion.dev.logging import logger
 from constants import CARD_INFO_DATA_PATH
+
+scripts_dir = os.path.dirname(os.path.abspath(__file__))
+CARD_INFO_DATA_PATH = os.path.join(scripts_dir, CARD_INFO_DATA_PATH)
 
 def card_info(result=[], page=1):
     logger.debug(f"page: {page}")
