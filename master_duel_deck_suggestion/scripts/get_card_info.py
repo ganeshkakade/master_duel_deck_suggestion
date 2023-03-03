@@ -3,7 +3,7 @@ import os
 import requests
 import json
 from master_duel_deck_suggestion.scripts.helpers import safe_open
-from master_duel_deck_suggestion.dev.debugging import logger
+from master_duel_deck_suggestion.tools.debugging import logger
 from master_duel_deck_suggestion.scripts.constants import CARD_INFO_DATA_PATH
 
 file_dir = os.path.dirname(os.path.abspath(__file__))

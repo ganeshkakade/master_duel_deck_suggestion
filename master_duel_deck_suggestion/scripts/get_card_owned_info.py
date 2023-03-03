@@ -4,7 +4,7 @@ import pyautogui
 import pygetwindow
 from master_duel_deck_suggestion.scripts.helpers import normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
 from master_duel_deck_suggestion.scripts.constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_ERROR
-from master_duel_deck_suggestion.dev.debugging import logger
+from master_duel_deck_suggestion.tools.debugging import logger
 import time
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
