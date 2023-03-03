@@ -9,7 +9,7 @@ from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
 pytesseract.tesseract_cmd = f"C:/Users/Ganesh Kakade/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
 # create and configure logger
-logging.basicConfig(filename="../debug.log",
+logging.basicConfig(filename="../../debug.log",
                     format="%(asctime)s %(message)s",
                     datefmt="%Y-%m-%d %H:%M:%S",
                     filemode='w',
