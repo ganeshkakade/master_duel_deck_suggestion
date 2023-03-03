@@ -3,8 +3,8 @@ import json
 import pyautogui
 import pygetwindow
 from helpers import normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
+from master_duel_deck_suggestion.scripts.constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_ERROR
 from master_duel_deck_suggestion.dev.debugging import logger
-from constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS
 import time
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
@@ -46,7 +46,7 @@ def validate_select(card, repeat=0, dx=0): # dx -> movement along x-axis
         return True
 
     repeat = repeat + 1
-    if repeat == 5: # max repeat limit 5. tried to brute force match
+    if repeat == 1: # max repeat limit 5. tried to brute force match
         return False
 
     dx = dx + select_region_coords_delta['x']
@@ -72,7 +72,7 @@ def get_card_owned_info(card_info):
             # take_screenshot(card)
             # need to process more for card_owned info
         else:
-            logger.debug(f"screenshot not taken. no image title match found for the card: {card['name']}")
+            logger.debug(f"{TITLE_IMAGE_ERROR}: {card['name']}")
 
     return card_owned
 

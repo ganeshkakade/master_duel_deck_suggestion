@@ -3,7 +3,7 @@ import pyautogui
 import re
 from PIL import Image, ImageFilter, ImageEnhance
 from pytesseract import pytesseract
-from constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
+from master_duel_deck_suggestion.scripts.constants import FIXED_SCREEN_SIZE, TITLE_SIZE, TITLE_COORDS
 
 pytesseract.tesseract_cmd = f"C:/Users/Ganesh Kakade/AppData/Local/Programs/Tesseract-OCR/tesseract.exe"
 
