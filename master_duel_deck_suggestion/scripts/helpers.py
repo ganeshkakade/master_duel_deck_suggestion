@@ -1,6 +1,7 @@
 import re
 import pyautogui
 import shutil
+import json
 from pathlib import Path
 from pytesseract import pytesseract
 from PIL import Image, ImageFilter, ImageEnhance
@@ -37,15 +38,18 @@ def preprocess_and_ocr_image(image):
     text = pytesseract.image_to_string(image)
     return text
 
-def normalize_str(str):
+def normalize_str(s):
     return (
-        re.sub(r'[^\w\s-]', '', str)
+        re.sub(r'[^\w\s-]', '', s)
         .strip()
         .lower()
     )
 
 def alnum_str():
     return re.sub(r'[^a-zA-Z0-9]+', '_', s).strip('_').lower()
+
+def unescape_unicode(s):
+    return json.loads(f'"{s}"')
 
 def path_exists(path):
     return Path(path).exists()

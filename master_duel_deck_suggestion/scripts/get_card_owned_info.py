@@ -36,17 +36,20 @@ def image_to_text_match(card):
        return True
     return False
 
-def validate_selected(card, repeat=0, dx=0, dy=0): # dx -> movement along x-axis
+def validate_selected(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis
     if image_to_text_match(card):
         return True
 
     repeat = repeat + 1
-    if repeat == 1: # max repeat limit 5. # increase limit to 30 with vertical 
+    if repeat == 1: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
         return False
-
-    dx = dx + select_region_coords_delta['x']
-    move_to_select(dx)
-    return validate_selected(card, repeat, dx)
+    if repeat and repeat % 6 == 0:
+        dx = 0
+        dy = dy + select_region_coords_delta['y']
+    else:
+        dx = dx + select_region_coords_delta['x']
+    move_to_select(dx, dy)
+    return validate_selected(card, repeat, dx, dy)
 
 def get_card_info_from_file():
     if path_exists(CARD_INFO_DATA_PATH):
@@ -107,6 +110,7 @@ def open_detail():
 def close_detail():
     pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
     pyautogui.click()
+    time.sleep(0.5) # wait for detail window to close
 
 def switch_window():
     handle = pygetwindow.getWindowsWithTitle('masterduel')
