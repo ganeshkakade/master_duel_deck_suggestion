@@ -26,14 +26,14 @@ def image_to_text_match(card):
     open_detail()
     
     image = take_title_screenshot(card)
+
+    close_detail()
     
     name = normalize_str(card['name'])
     text = normalize_str(preprocess_and_ocr_image(image))
 
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
-
-    close_detail()
 
     if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with the name
        return True
@@ -51,10 +51,11 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
 
     if image_to_text_match(card):
         return True
-    else: logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
+    else: 
+        logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
 
     repeat = repeat + 1
-    if repeat == 1: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
+    if repeat == 30: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
         logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card['name']}")
         return False
     if repeat and repeat % 6 == 0:
@@ -88,7 +89,7 @@ def get_card_owned_info(card_info):
         type_name_enter(card)
         
         if check_search_selection(card):
-            pass
+            card_owned.append(card)
 
     return card_owned
 
@@ -118,7 +119,6 @@ def open_detail():
 def close_detail():
     pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
     pyautogui.click()
-    time.sleep(0.5) # wait for detail window to close
 
 def switch_window():
     handle = pygetwindow.getWindowsWithTitle('masterduel')
