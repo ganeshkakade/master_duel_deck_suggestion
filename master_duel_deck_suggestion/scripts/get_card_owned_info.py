@@ -1,15 +1,13 @@
-import os
 import json
 import pyautogui
 import pygetwindow
-from master_duel_deck_suggestion.scripts.helpers import normalize_str, makedirs, safe_open, preprocess_and_ocr_image, getfilesize, get_region_coords, get_region_size
-from master_duel_deck_suggestion.scripts.constants import CARD_INFO_DATA_PATH, CARD_IMAGE_DATA_PATH, SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_ERROR
+from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists
+from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT
 from master_duel_deck_suggestion.tools.debugging import logger
 import time
 
-file_dir = os.path.dirname(os.path.abspath(__file__))
-CARD_INFO_DATA_PATH = os.path.join(file_dir, CARD_INFO_DATA_PATH)
-CARD_IMAGE_DATA_PATH = os.path.join(file_dir, CARD_IMAGE_DATA_PATH)
+data_dir = get_filepath(__file__, "../data")  
+CARD_INFO_DATA_PATH = data_dir / "card_info.json"
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -22,42 +20,45 @@ select_detail_region_coords = get_region_coords(DETAIL_COORDS)
 close_region_coords = get_region_coords(CLOSE_COORS)
 
 def image_to_text_match(card):
-    move_to_select_detail() # open card detail
+    open_detail()
     
-    time.sleep(0.5) # wait for detail window to open
-    
-    image_path = take_title_screenshot(card)
+    image = take_title_screenshot(card)
     
     name = normalize_str(card['name'])
-    text = normalize_str(preprocess_and_ocr_image(image_path))
+    text = normalize_str(preprocess_and_ocr_image(image))
 
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
-    logger.debug(f"match result: {len(text) > 0 and (text == name or text in name)}")
 
-    close_detail() # close card detail
+    close_detail()
 
     if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with the name
        return True
     return False
 
-def validate_select(card, repeat=0, dx=0): # dx -> movement along x-axis
+def validate_selected(card, repeat=0, dx=0, dy=0): # dx -> movement along x-axis
     if image_to_text_match(card):
         return True
 
     repeat = repeat + 1
-    if repeat == 1: # max repeat limit 5. tried to brute force match
+    if repeat == 1: # max repeat limit 5. # increase limit to 30 with vertical 
         return False
 
     dx = dx + select_region_coords_delta['x']
     move_to_select(dx)
-    return validate_select(card, repeat, dx)
+    return validate_selected(card, repeat, dx)
 
 def get_card_info_from_file():
-    with safe_open(CARD_INFO_DATA_PATH) as json_file:
-        if getfilesize(CARD_INFO_DATA_PATH) > 0:
-            return json.load(json_file)
+    if path_exists(CARD_INFO_DATA_PATH):
+        try:
+            with open(CARD_INFO_DATA_PATH) as json_file:
+                return json.load(json_file)
+        except json.decoder.JSONDecodeError:
+            print("invalid card_info.json file")
+    else:
+        print("card_info.json file does not exist")
     return []
+
 
 def get_card_owned_info(card_info):
     card_owned = []
@@ -65,26 +66,23 @@ def get_card_owned_info(card_info):
     for card in card_info:
         move_to_search()
         type_name_enter(card)
+
+        # before should check if result exists for entered name(same mechanism could be added in repeat) 
+        # that "if condition" would save move to select time
+        # also could log info on cards which does not exists in ocg / has weird card name like live*twin which are not searchable
         move_to_select(duration=2)
 
-        if validate_select(card):
+        if validate_selected(card):
             pass
-            # take_screenshot(card)
+            # gather the rest of information like card dismantalable, no owned etc
             # need to process more for card_owned info
         else:
-            logger.debug(f"{TITLE_IMAGE_ERROR}: {card['name']}")
+            logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
 
     return card_owned
 
 def take_title_screenshot(card):
-    image_path = f"{CARD_IMAGE_DATA_PATH}/title_{normalize_str(card['name'])}.png"
-    pyautogui.screenshot(image_path, region=(title_region_coords['x'], title_region_coords['y'], title_region_size['width'], title_region_size['height'])) # might need to change based on screen resolution (default: 1920x1080)
-    return image_path
-
-def take_screenshot(card):
-    image_path = f"{CARD_IMAGE_DATA_PATH}/{normalize_str(card['name'])}.png"
-    pyautogui.screenshot(image_path)
-    return image_path
+    return pyautogui.screenshot(region=(title_region_coords['x'], title_region_coords['y'], title_region_size['width'], title_region_size['height'])) # might need to update based on screen resolution (default: 1920x1080)
 
 def type_name_enter(card):
     pyautogui.typewrite(card['name'])
@@ -102,6 +100,10 @@ def move_to_select_detail():
     pyautogui.moveTo(select_detail_region_coords['x'], select_detail_region_coords['y'])
     pyautogui.click()
 
+def open_detail():
+    move_to_select_detail() # open card detail
+    time.sleep(0.5) # wait for detail window to open
+
 def close_detail():
     pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
     pyautogui.click()
@@ -118,11 +120,10 @@ def main():
 
     if card_info:
         switch_window()
-        makedirs(CARD_IMAGE_DATA_PATH) # make dir to store processed card images
         card_owned_info = get_card_owned_info(card_info)
-        logger.debug(f"card owned info: {card_owned_info}")
 
-    else: logger.debug(f"card info is not available in the {CARD_INFO_DATA_PATH} file")
+    else:
+        logger.debug(f"card info not available in the card_info.json file")
 
 if __name__ == '__main__':
     try:

@@ -1,7 +1,4 @@
-CARD_INFO_DATA_PATH = "../data/card_info.json"
-CARD_IMAGE_DATA_PATH = "../data/card_images"
-
-TITLE_IMAGE_ERROR = "The title image does not match the card"
+TITLE_IMAGE_DEFECT = "title image defect for card"
 
 FIXED_SCREEN_SIZE = {'width': 1920, 'height': 1080}
 SEARCH_COORDS = {'x': 1520, 'y': 205}

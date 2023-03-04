@@ -1,9 +1,10 @@
-import os
 import logging
+from master_duel_deck_suggestion.scripts.helpers import makedirs, get_filepath
 
-file_dir = os.path.dirname(os.path.abspath(__file__))
-DEBUG_LOG_PATH = os.path.join(file_dir, "../logs/debug.log")
-DEFECT_LOG_PATH = os.path.join(file_dir, "../logs/defect.log")
+log_dir = get_filepath(__file__, "../logs")
+DEBUG_LOG_PATH = log_dir / "debug.log"
+
+makedirs(DEBUG_LOG_PATH)
 
 # create and configure logger
 logging.basicConfig(filename=DEBUG_LOG_PATH,
