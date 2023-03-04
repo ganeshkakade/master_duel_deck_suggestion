@@ -1,8 +1,8 @@
 import json
 import pyautogui
 import pygetwindow
-from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists
-from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT
+from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, search_card_exists
+from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT
 from master_duel_deck_suggestion.tools.debugging import logger
 import time
 
@@ -18,6 +18,9 @@ title_region_coords = get_region_coords(TITLE_COORDS)
 
 select_detail_region_coords = get_region_coords(DETAIL_COORDS)
 close_region_coords = get_region_coords(CLOSE_COORS)
+
+card_selection_size = get_region_size(CARD_SELECTION_SIZE)
+card_selection_coords = get_region_coords(CARD_SELECTION_COORDS)
 
 def image_to_text_match(card):
     open_detail()
@@ -36,20 +39,31 @@ def image_to_text_match(card):
        return True
     return False
 
-def validate_selected(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis
+def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis
+    if not repeat:
+        time.sleep(2) # wait for results to load when searched
+    
+    if not search_result_exists(dx, dy):
+        logger.debug(f"{SEARCH_RESULT_DEFECT}: {card['name']}")
+        return False
+    
+    move_to_select(dx, dy)
+
     if image_to_text_match(card):
         return True
+    else: logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
 
     repeat = repeat + 1
     if repeat == 1: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
+        logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card['name']}")
         return False
     if repeat and repeat % 6 == 0:
         dx = 0
         dy = dy + select_region_coords_delta['y']
     else:
         dx = dx + select_region_coords_delta['x']
-    move_to_select(dx, dy)
-    return validate_selected(card, repeat, dx, dy)
+
+    return check_search_selection(card, repeat, dx, dy)
 
 def get_card_info_from_file():
     if path_exists(CARD_INFO_DATA_PATH):
@@ -62,25 +76,19 @@ def get_card_info_from_file():
         print("card_info.json file does not exist")
     return []
 
-
+def search_result_exists(dx, dy):
+    selection_image = pyautogui.screenshot(region=(card_selection_coords['x'] + dx, card_selection_coords['y'] + dy, card_selection_size['width'], card_selection_size['height']))
+    return search_card_exists(selection_image)
+    
 def get_card_owned_info(card_info):
     card_owned = []
 
     for card in card_info:
         move_to_search()
         type_name_enter(card)
-
-        # before should check if result exists for entered name(same mechanism could be added in repeat) 
-        # that "if condition" would save move to select time
-        # also could log info on cards which does not exists in ocg / has weird card name like live*twin which are not searchable
-        move_to_select(duration=2)
-
-        if validate_selected(card):
+        
+        if check_search_selection(card):
             pass
-            # gather the rest of information like card dismantalable, no owned etc
-            # need to process more for card_owned info
-        else:
-            logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
 
     return card_owned
 
@@ -91,8 +99,8 @@ def type_name_enter(card):
     pyautogui.typewrite(card['name'])
     pyautogui.press("enter")
 
-def move_to_select(dx=0, dy=0, duration=0):
-    pyautogui.moveTo(select_region_coords['x'] + dx, select_region_coords['y'] + dy, duration = duration) # added a duration delay since loading cards based on search takes more time
+def move_to_select(dx=0, dy=0):
+    pyautogui.moveTo(select_region_coords['x'] + dx, select_region_coords['y'] + dy)
     pyautogui.click()
     
 def move_to_search():

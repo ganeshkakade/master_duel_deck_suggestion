@@ -2,6 +2,7 @@ import re
 import pyautogui
 import shutil
 import json
+import numpy as np
 from pathlib import Path
 from pytesseract import pytesseract
 from PIL import Image, ImageFilter, ImageEnhance
@@ -37,6 +38,30 @@ def preprocess_and_ocr_image(image):
     # extract text using tesseract
     text = pytesseract.image_to_string(image)
     return text
+
+def search_card_exists(image):
+    # convert the image to RGB color space
+    image = image.convert("RGB")
+
+    # convert the image to a numpy array
+    img_array = np.array(image)
+
+    # calculate the standard deviation of each color channel
+    r_std = np.std(img_array[:,:,0])
+    g_std = np.std(img_array[:,:,1])
+    b_std = np.std(img_array[:,:,2])
+
+    # calculate the average standard deviation
+    avg_std = (r_std + g_std + b_std) / 3
+
+    # define a threshold for colorfulness
+    colorful_threshold = 25
+
+    # check if the image is colorful or not
+    if avg_std > colorful_threshold:
+        return True
+    else:
+        return False
 
 def normalize_str(s):
     return (
