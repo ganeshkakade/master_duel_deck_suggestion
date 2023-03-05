@@ -1,7 +1,7 @@
 # import module when need to measure time metrics for scripts
 import atexit
-from time import time, strftime, localtime
 from datetime import timedelta
+from time import time, strftime, localtime
 
 def seconds_to_str(elapsed=None):
     if elapsed:
@@ -12,15 +12,14 @@ def seconds_to_str(elapsed=None):
 def log(s, elapsed=None):
     line = "=" * 40
     print(line)
-    print(seconds_to_str(), '-', s)
+    print(f"{seconds_to_str()} - {s}")
     if elapsed:
-        print("elapsed time:", elapsed)
+        print(f"elapsed time: {seconds_to_str(elapsed)}")
     print(line)
 
 def endlog():
-    end = time()
-    elapsed = end - start
-    log("script ended", seconds_to_str(elapsed))
+    elapsed = time() - start
+    log("script ended", elapsed=elapsed)
 
 start = time()
 atexit.register(endlog)
