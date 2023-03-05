@@ -1,6 +1,6 @@
 import json
 from collections import deque
-from master_duel_deck_suggestion.scripts.helpers import path_exists, get_filepath, get_json_info, write_to_file, writelines_to_file
+from master_duel_deck_suggestion.scripts.helpers import path_exists, get_filepath, get_json_info, write_to_file, writelines_to_file, makedirs
 from master_duel_deck_suggestion.scripts.constants import TITLE_IMAGE_DEFECT, SEARCH_RESULT_DEFECT, OUT_OF_BOUND_DEFECT
 
 log_dir = get_filepath(__file__, "../logs")
@@ -16,6 +16,8 @@ OUT_OF_BOUND_DEFECT_LOG_PATH = log_dir / "out_of_bound_defect.log"
 TITLE_IMAGE_DEFECT_JSON_PATH = log_dir / "title_image_defect.json"
 SEARCH_RESULT_DEFECT_JSON_PATH = log_dir / "search_result_defect.json"
 OUT_OF_BOUND_DEFECT_JSON_PATH = log_dir / "out_of_bound_defect.json"
+
+makedirs(DEBUG_LOG_PATH)
 
 def get_file_contents(file_path):
     if path_exists(file_path):
@@ -36,11 +38,11 @@ def process_defect_logs():
         out_of_bound_defect_json = []
 
         for card in card_info:
-            if any(card["name"] in line for line in title_image_defect_lines):
+            if title_image_defect_lines and any(card["name"] in line for line in title_image_defect_lines):
                 title_image_defect_json.append(card)
-            if any(card["name"] in line for line in search_result_defect_lines):
+            if search_result_defect_lines and any(card["name"] in line for line in search_result_defect_lines):
                 search_result_defect_json.append(card)
-            if any(card["name"] in line for line in out_of_bound_defect_lines):
+            if out_of_bound_defect_lines and any(card["name"] in line for line in out_of_bound_defect_lines):
                 out_of_bound_defect_json.append(card)
 
         write_to_file(TITLE_IMAGE_DEFECT_JSON_PATH, json.dumps(title_image_defect_json))
