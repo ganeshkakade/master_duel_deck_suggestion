@@ -1,6 +1,8 @@
 # note: card images can be accessed from link using id i.e https://s3.duellinksmeta.com/cards/{id}_w140.webp
-import requests
 import json
+
+import requests
+
 from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs, write_to_file
 from master_duel_deck_suggestion.tools.debugging import logger
 

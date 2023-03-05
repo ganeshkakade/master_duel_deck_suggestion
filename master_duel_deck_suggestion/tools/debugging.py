@@ -1,4 +1,5 @@
 import logging
+
 from master_duel_deck_suggestion.scripts.helpers import makedirs, get_filepath
 
 log_dir = get_filepath(__file__, "../logs")

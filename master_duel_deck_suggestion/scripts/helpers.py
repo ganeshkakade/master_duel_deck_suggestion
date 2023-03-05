@@ -1,11 +1,13 @@
 import re
-import pyautogui
-import shutil
 import json
-import numpy as np
 from pathlib import Path
+
+import shutil
+import pyautogui
+import numpy as np
 from pytesseract import pytesseract
 from PIL import Image, ImageFilter, ImageEnhance
+
 from master_duel_deck_suggestion.scripts.constants import FIXED_SCREEN_SIZE
 
 tesseract_path = shutil.which('tesseract')

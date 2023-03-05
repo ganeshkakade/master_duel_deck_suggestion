@@ -1,6 +1,7 @@
 import json
-from collections import deque
 from pathlib import Path
+from collections import deque
+
 from master_duel_deck_suggestion.scripts.helpers import path_exists, get_filepath, get_json_info, write_to_file, writelines_to_file, makedirs
 from master_duel_deck_suggestion.scripts.constants import TITLE_IMAGE_DEFECT, SEARCH_RESULT_DEFECT, OUT_OF_BOUND_DEFECT
 

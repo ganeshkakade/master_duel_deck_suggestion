@@ -1,10 +1,12 @@
 import json
+import time
+
 import pyautogui
 import pygetwindow
+
 from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists, get_json_info
 from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORDS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
 from master_duel_deck_suggestion.tools.debugging import logger
-import time
 
 data_dir = get_filepath(__file__, "../data")  
 CARD_INFO_DATA_PATH = data_dir / "card_info.json"
