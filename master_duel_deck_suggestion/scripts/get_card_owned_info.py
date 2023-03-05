@@ -1,7 +1,7 @@
 import json
 import pyautogui
 import pygetwindow
-from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists
+from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists, get_json_info
 from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
 from master_duel_deck_suggestion.tools.debugging import logger
 import time
@@ -69,17 +69,6 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
 
     return check_search_selection(card, repeat, dx, dy)
 
-def get_card_info_from_file():
-    if path_exists(CARD_INFO_DATA_PATH):
-        try:
-            with open(CARD_INFO_DATA_PATH) as json_file:
-                return json.load(json_file)
-        except json.decoder.JSONDecodeError:
-            print("invalid card_info.json file")
-    else:
-        print("card_info.json file does not exists")
-    return []
-
 def search_result_exists(dx, dy):
     selection_image = pyautogui.screenshot(region=(card_selection_region_coords['x'] + dx, card_selection_region_coords['y'] + dy, card_selection_region_size['width'], card_selection_region_size['height']))
     return vibrant_colors_exists(selection_image)
@@ -142,8 +131,8 @@ def switch_window(title):
 
 def main():
     card_owned_info = []
-    card_info = get_card_info_from_file()
-
+    card_info = get_json_info(CARD_INFO_DATA_PATH)
+    
     if card_info:
         switch_window('masterduel')
         if deck_window_exists():

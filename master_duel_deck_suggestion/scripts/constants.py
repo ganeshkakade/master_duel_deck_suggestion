@@ -1,6 +1,6 @@
 TITLE_IMAGE_DEFECT = "title image defect for card"
-OUT_OF_BOUND_DEFECT = "out of bound defect for card"
 SEARCH_RESULT_DEFECT = "search result defect for card"
+OUT_OF_BOUND_DEFECT = "out of bound defect for card"
 
 FIXED_SCREEN_SIZE = {'width': 1920, 'height': 1080}
 SEARCH_COORDS = {'x': 1520, 'y': 205}

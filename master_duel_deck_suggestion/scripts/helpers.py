@@ -10,7 +10,7 @@ from master_duel_deck_suggestion.scripts.constants import FIXED_SCREEN_SIZE
 
 tesseract_path = shutil.which('tesseract')
 if tesseract_path is not None:
-    pytesseract.tesseract_cmd = shutil.which('tesseract')
+    pytesseract.tesseract_cmd = tesseract_path
 else:
     pytesseract.tesseract_cmd =  r"C:\Users\UserName\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 
@@ -99,4 +99,22 @@ def get_region_size(size):
     w = w_size_ratio * size['width']
     h = h_size_ratio * size['height']
     return {'width': w, 'height': h}
-    
+
+def get_json_info(file_path):
+    if path_exists(file_path):
+        try:
+            with open(file_path) as json_file:
+                return json.load(json_file)
+        except json.decoder.JSONDecodeError:
+            print(f"invalid {file_path} file")
+    else:
+        print(f"{file_path} file does not exists")
+
+def write_to_file(file_path, contents):
+    with open(file_path, 'w') as file:
+        file.write(contents)
+
+def writelines_to_file(file_path, contents):
+    with open(file_path, 'w') as file:
+            file.writelines(contents)
+

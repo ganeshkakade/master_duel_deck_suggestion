@@ -1,7 +1,7 @@
 # note: card images can be accessed from link using id i.e https://s3.duellinksmeta.com/cards/{id}_w140.webp
 import requests
 import json
-from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs
+from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs, write_to_file
 from master_duel_deck_suggestion.tools.debugging import logger
 
 data_dir = get_filepath(__file__, "../data")
@@ -27,8 +27,7 @@ def card_info(result=[], page=1):
     return card_info(result, page)
 
 def main():
-    with open(CARD_INFO_DATA_PATH, 'w') as json_file:
-        json_file.write(json.dumps(card_info()))
+    write_to_file(CARD_INFO_DATA_PATH, json.dumps(card_info()))
 
 if __name__ == '__main__':
     try:
