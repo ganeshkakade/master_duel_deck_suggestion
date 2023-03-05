@@ -4,8 +4,30 @@ import time
 import pyautogui
 import pygetwindow
 
-from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists, get_json_info
-from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORDS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
+from master_duel_deck_suggestion.scripts.helpers import (
+    normalize_str, 
+    preprocess_and_ocr_image, 
+    get_region_coords, 
+    get_region_size, 
+    get_filepath, path_exists, 
+    vibrant_colors_exists,
+    get_json_info
+)
+from master_duel_deck_suggestion.scripts.constants import (
+    SEARCH_COORDS, 
+    SELECT_COORDS, 
+    SELECT_COORDS_DELTA, 
+    TITLE_SIZE, 
+    TITLE_COORDS, 
+    DETAIL_COORDS, 
+    CLOSE_COORDS, 
+    TITLE_IMAGE_DEFECT, 
+    CARD_SELECTION_SIZE, 
+    CARD_SELECTION_COORDS, 
+    OUT_OF_BOUND_DEFECT, 
+    SEARCH_RESULT_DEFECT, 
+    SAVE_SIZE, SAVE_COORDS
+)
 from master_duel_deck_suggestion.tools.debugging import logger
 
 data_dir = get_filepath(__file__, "../data")  
@@ -59,7 +81,7 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
     else: 
         logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
 
-    repeat = repeat + 1
+    repeat += 1
     if repeat == 30: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
         logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card['name']}")
         return False
@@ -72,7 +94,12 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
     return check_search_selection(card, repeat, dx, dy)
 
 def search_result_exists(dx, dy):
-    selection_image = pyautogui.screenshot(region=(card_selection_region_coords['x'] + dx, card_selection_region_coords['y'] + dy, card_selection_region_size['width'], card_selection_region_size['height']))
+    selection_image = pyautogui.screenshot(region=(
+        card_selection_region_coords['x'] + dx, 
+        card_selection_region_coords['y'] + dy, 
+        card_selection_region_size['width'], 
+        card_selection_region_size['height']
+    ))
     return vibrant_colors_exists(selection_image)
     
 def get_card_owned_info(card_info):
@@ -88,7 +115,12 @@ def get_card_owned_info(card_info):
     return card_owned
 
 def deck_window_exists():
-    save_image = pyautogui.screenshot(region=(save_region_coords['x'], save_region_coords['y'], save_region_size['width'], save_region_size['height']))
+    save_image = pyautogui.screenshot(region=(
+        save_region_coords['x'], 
+        save_region_coords['y'], 
+        save_region_size['width'], 
+        save_region_size['height']
+    ))
     if normalize_str(preprocess_and_ocr_image(save_image)) == 'save':
         return True
     else:  
@@ -96,7 +128,8 @@ def deck_window_exists():
     return False
 
 def take_title_screenshot(card):
-    return pyautogui.screenshot(region=(title_region_coords['x'], title_region_coords['y'], title_region_size['width'], title_region_size['height'])) # might need to update based on screen resolution (default: 1920x1080)
+    with pyautogui.screenshot(region=(title_region_coords['x'], title_region_coords['y'], title_region_size['width'], title_region_size['height'])) as screenshot:# might need to update based on screen resolution (default: 1920x1080)
+        return screenshot
 
 def type_name_enter(card):
     pyautogui.typewrite(card['name'])
