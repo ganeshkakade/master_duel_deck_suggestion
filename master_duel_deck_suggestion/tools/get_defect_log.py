@@ -1,5 +1,6 @@
 import json
 from collections import deque
+from pathlib import Path
 from master_duel_deck_suggestion.scripts.helpers import path_exists, get_filepath, get_json_info, write_to_file, writelines_to_file, makedirs
 from master_duel_deck_suggestion.scripts.constants import TITLE_IMAGE_DEFECT, SEARCH_RESULT_DEFECT, OUT_OF_BOUND_DEFECT
 
@@ -21,7 +22,7 @@ makedirs(DEBUG_LOG_PATH)
 
 def get_file_contents(file_path):
     if path_exists(file_path):
-        with open(file_path) as file:
+        with file_path.open() as file:
             return file.readlines()
     else:
         print(f"{file_path} file does not exists")

@@ -103,7 +103,7 @@ def get_region_size(size):
 def get_json_info(file_path):
     if path_exists(file_path):
         try:
-            with open(file_path) as json_file:
+            with file_path.open() as json_file:
                 return json.load(json_file)
         except json.decoder.JSONDecodeError:
             print(f"invalid {file_path} file")
@@ -111,10 +111,10 @@ def get_json_info(file_path):
         print(f"{file_path} file does not exists")
 
 def write_to_file(file_path, contents):
-    with open(file_path, 'w') as file:
+    with file_path.open(mode='w') as file:
         file.write(contents)
 
 def writelines_to_file(file_path, contents):
-    with open(file_path, 'w') as file:
+    with file_path.open(mode='w') as file:
             file.writelines(contents)
 
