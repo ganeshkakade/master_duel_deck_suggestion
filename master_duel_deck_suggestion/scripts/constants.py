@@ -15,3 +15,6 @@ CLOSE_COORS = {'x': 1855, 'y': 60}
 
 CARD_SELECTION_SIZE = {'width': 85, 'height': 120}
 CARD_SELECTION_COORDS = {'x': 1320, 'y': 320}
+
+SAVE_SIZE = {'width': 120, 'height': 25}
+SAVE_COORDS = {'x': 1650, 'y': 35}

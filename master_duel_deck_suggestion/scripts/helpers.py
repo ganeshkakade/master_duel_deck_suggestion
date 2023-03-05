@@ -39,7 +39,7 @@ def preprocess_and_ocr_image(image):
     text = pytesseract.image_to_string(image)
     return text
 
-def search_card_exists(image):
+def vibrant_colors_exists(image):
     # convert the image to RGB color space
     image = image.convert("RGB")
 

@@ -1,8 +1,8 @@
 import json
 import pyautogui
 import pygetwindow
-from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, search_card_exists
-from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT
+from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists
+from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
 from master_duel_deck_suggestion.tools.debugging import logger
 import time
 
@@ -19,8 +19,11 @@ title_region_coords = get_region_coords(TITLE_COORDS)
 select_detail_region_coords = get_region_coords(DETAIL_COORDS)
 close_region_coords = get_region_coords(CLOSE_COORS)
 
-card_selection_size = get_region_size(CARD_SELECTION_SIZE)
-card_selection_coords = get_region_coords(CARD_SELECTION_COORDS)
+card_selection_region_size = get_region_size(CARD_SELECTION_SIZE)
+card_selection_region_coords = get_region_coords(CARD_SELECTION_COORDS)
+
+save_region_size = get_region_size(SAVE_SIZE)
+save_region_coords = get_region_coords(SAVE_COORDS)
 
 def image_to_text_match(card):
     open_detail()
@@ -74,12 +77,12 @@ def get_card_info_from_file():
         except json.decoder.JSONDecodeError:
             print("invalid card_info.json file")
     else:
-        print("card_info.json file does not exist")
+        print("card_info.json file does not exists")
     return []
 
 def search_result_exists(dx, dy):
-    selection_image = pyautogui.screenshot(region=(card_selection_coords['x'] + dx, card_selection_coords['y'] + dy, card_selection_size['width'], card_selection_size['height']))
-    return search_card_exists(selection_image)
+    selection_image = pyautogui.screenshot(region=(card_selection_region_coords['x'] + dx, card_selection_region_coords['y'] + dy, card_selection_region_size['width'], card_selection_region_size['height']))
+    return vibrant_colors_exists(selection_image)
     
 def get_card_owned_info(card_info):
     card_owned = []
@@ -92,6 +95,14 @@ def get_card_owned_info(card_info):
             card_owned.append(card)
 
     return card_owned
+
+def deck_window_exists():
+    save_image = pyautogui.screenshot(region=(save_region_coords['x'], save_region_coords['y'], save_region_size['width'], save_region_size['height']))
+    if normalize_str(preprocess_and_ocr_image(save_image)) == 'save':
+        return True
+    else:  
+        print("switch to create new deck in masterduel before you proceed")
+    return False
 
 def take_title_screenshot(card):
     return pyautogui.screenshot(region=(title_region_coords['x'], title_region_coords['y'], title_region_size['width'], title_region_size['height'])) # might need to update based on screen resolution (default: 1920x1080)
@@ -120,22 +131,23 @@ def close_detail():
     pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
     pyautogui.click()
 
-def switch_window():
-    handle = pygetwindow.getWindowsWithTitle('masterduel')
+def switch_window(title):
+    handle = pygetwindow.getWindowsWithTitle(title)
     if handle:
         handle[0].activate()
         handle[0].maximize()
+        time.sleep(0.5) # wait for window to open when switching
+    else:
+        print(f"{title} window does not exists")
 
 def main():
     card_owned_info = []
     card_info = get_card_info_from_file()
 
     if card_info:
-        switch_window()
-        card_owned_info = get_card_owned_info(card_info)
-
-    else:
-        logger.debug(f"card info not available in the card_info.json file")
+        switch_window('masterduel')
+        if deck_window_exists():
+             card_owned_info = get_card_owned_info(card_info)
 
 if __name__ == '__main__':
     try:

@@ -21,7 +21,7 @@ def main():
 
                     previous_lines.append(line)
     else:
-        print("debug.log file does not exist")
+        print("debug.log file does not exists")
 
 if __name__ == '__main__':
     main()
