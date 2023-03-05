@@ -2,7 +2,7 @@ import json
 import pyautogui
 import pygetwindow
 from master_duel_deck_suggestion.scripts.helpers import normalize_str, preprocess_and_ocr_image, get_region_coords, get_region_size, get_filepath, path_exists, vibrant_colors_exists, get_json_info
-from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
+from master_duel_deck_suggestion.scripts.constants import SEARCH_COORDS, SELECT_COORDS, SELECT_COORDS_DELTA, TITLE_SIZE, TITLE_COORDS, DETAIL_COORDS, CLOSE_COORDS, TITLE_IMAGE_DEFECT, CARD_SELECTION_SIZE, CARD_SELECTION_COORDS, OUT_OF_BOUND_DEFECT, SEARCH_RESULT_DEFECT, SAVE_SIZE, SAVE_COORDS
 from master_duel_deck_suggestion.tools.debugging import logger
 import time
 
@@ -17,7 +17,7 @@ title_region_size = get_region_size(TITLE_SIZE)
 title_region_coords = get_region_coords(TITLE_COORDS)
 
 select_detail_region_coords = get_region_coords(DETAIL_COORDS)
-close_region_coords = get_region_coords(CLOSE_COORS)
+close_region_coords = get_region_coords(CLOSE_COORDS)
 
 card_selection_region_size = get_region_size(CARD_SELECTION_SIZE)
 card_selection_region_coords = get_region_coords(CARD_SELECTION_COORDS)

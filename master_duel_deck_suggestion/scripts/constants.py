@@ -11,7 +11,7 @@ TITLE_SIZE = {'width': 1050, 'height': 40}
 TITLE_COORDS = {'x': 640, 'y': 155}
 
 DETAIL_COORDS = {'x': 130, 'y': 300}
-CLOSE_COORS = {'x': 1855, 'y': 60}
+CLOSE_COORDS = {'x': 1855, 'y': 60}
 
 CARD_SELECTION_SIZE = {'width': 85, 'height': 120}
 CARD_SELECTION_COORDS = {'x': 1320, 'y': 320}
