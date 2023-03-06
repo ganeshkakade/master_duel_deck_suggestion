@@ -184,6 +184,7 @@ def set_sort_filters():
     time.sleep(S_TIME) # wait for window to open
     pyautogui.moveTo(sort_no_owned_region_coords['x'], sort_no_owned_region_coords['y'])
     pyautogui.click()
+    time.sleep(S_TIME) # wait for window to close
 
 def reset_all_filters():
     pyautogui.moveTo(reset_region_coords['x'], reset_region_coords['y'])
