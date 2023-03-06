@@ -1,5 +1,6 @@
 import re
 import json
+import codecs
 from pathlib import Path
 
 import shutil
@@ -119,4 +120,7 @@ def write_to_file(file_path, contents):
 def writelines_to_file(file_path, contents):
     with file_path.open(mode='w') as file:
             file.writelines(contents)
+
+def decode_str(s):
+    return codecs.decode(s, 'unicode_escape')
 
