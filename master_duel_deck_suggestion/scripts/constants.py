@@ -18,3 +18,8 @@ CARD_SELECTION_COORDS = {'x': 1320, 'y': 320}
 
 SAVE_SIZE = {'width': 120, 'height': 25}
 SAVE_COORDS = {'x': 1650, 'y': 35}
+
+SORT_COORDS = {'x': 1585, 'y': 270}
+SORT_NO_OWNED_DESC_COORDS = {'x': 1185, 'y': 350}
+
+RESET_COORDS = {'x': 1775, 'y': 270}

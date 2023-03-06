@@ -28,7 +28,10 @@ from master_duel_deck_suggestion.scripts.constants import (
     CARD_SELECTION_COORDS, 
     OUT_OF_BOUND_DEFECT, 
     SEARCH_SELECTION_DEFECT, 
-    SAVE_SIZE, SAVE_COORDS
+    SAVE_SIZE, SAVE_COORDS,
+    SORT_COORDS,
+    SORT_NO_OWNED_DESC_COORDS,
+    RESET_COORDS
 )
 from master_duel_deck_suggestion.tools.debugging import logger
 
@@ -50,6 +53,11 @@ card_selection_region_coords = get_region_coords(CARD_SELECTION_COORDS)
 
 save_region_size = get_region_size(SAVE_SIZE)
 save_region_coords = get_region_coords(SAVE_COORDS)
+
+sort_region_coords = get_region_coords(SORT_COORDS)
+sort_no_owned_region_coords = get_region_coords(SORT_NO_OWNED_DESC_COORDS)
+
+reset_region_coords = get_region_coords(RESET_COORDS)
 
 def image_to_text_match(card):
     open_detail()
@@ -164,9 +172,20 @@ def switch_window(title):
     if handle:
         handle[0].activate()
         handle[0].maximize()
-        time.sleep(0.5) # wait for window to open when switching
     else:
         print(f"{title} window does not exists")
+
+def set_sort_filters():
+    pyautogui.moveTo(sort_region_coords['x'], sort_region_coords['y'])
+    pyautogui.click()
+    time.sleep(0.5) # wait for window to open
+    pyautogui.moveTo(sort_no_owned_region_coords['x'], sort_no_owned_region_coords['y'])
+    pyautogui.click()
+
+def reset_all_filters():
+    pyautogui.moveTo(reset_region_coords['x'], reset_region_coords['y'])
+    pyautogui.click()
+    time.sleep(0.5) # wait for reset to complete
 
 def main():
     card_owned_info = []
@@ -174,8 +193,12 @@ def main():
     
     if card_info:
         switch_window('masterduel')
+        
         if deck_window_exists():
-             card_owned_info = get_card_owned_info(card_info)
+            reset_all_filters()
+            set_sort_filters()
+
+            card_owned_info = get_card_owned_info(card_info)
 
 if __name__ == '__main__':
     try:
