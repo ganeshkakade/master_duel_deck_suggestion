@@ -27,7 +27,7 @@ from master_duel_deck_suggestion.scripts.constants import (
     CARD_SELECTION_SIZE, 
     CARD_SELECTION_COORDS, 
     OUT_OF_BOUND_DEFECT, 
-    SEARCH_RESULT_DEFECT, 
+    SEARCH_SELECTION_DEFECT, 
     SAVE_SIZE, SAVE_COORDS
 )
 from master_duel_deck_suggestion.tools.debugging import logger
@@ -74,8 +74,8 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
     if not repeat:
         time.sleep(2) # wait for results to load when searched
     
-    if not search_result_exists(dx, dy):
-        logger.debug(f"{SEARCH_RESULT_DEFECT}: {card['name']}")
+    if not search_selection_exists(dx, dy):
+        logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card['name']}")
         return False
     
     move_to_select(dx, dy)
@@ -97,7 +97,7 @@ def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement alo
 
     return check_search_selection(card, repeat, dx, dy)
 
-def search_result_exists(dx, dy):
+def search_selection_exists(dx, dy):
     selection_image = pyautogui.screenshot(region=(
         card_selection_region_coords['x'] + dx, 
         card_selection_region_coords['y'] + dy, 
