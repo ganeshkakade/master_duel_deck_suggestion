@@ -11,7 +11,7 @@ CARD_INFO_DATA_PATH = data_dir / "card_info.json"
 
 makedirs(CARD_INFO_DATA_PATH)
 
-def card_info(result=[], page=1):
+def get_card_info(result=[], page=1):
     logger.debug(f"page: {page}")
 
     response = requests.get(f"https://www.masterduelmeta.com/api/v1/cards?cardSort=popRank&aggregate=search&page={page}&limit=2500")
@@ -26,10 +26,15 @@ def card_info(result=[], page=1):
 
     logger.debug(f"result size: {len(result)}")
 
-    return card_info(result, page)
+    return get_card_info(result, page)
+
+def filter_card_info(card_info):
+    filtered_card_info = [o for o in card_info if (not o.get("obtain") == []) and (not o.get("banStatus") == "Forbidden") and (not o.get("alternateArt") == True)]
+    return filtered_card_info
 
 def main():
-    write_to_file(CARD_INFO_DATA_PATH, json.dumps(card_info()))
+    filtered_card_info = filter_card_info(get_card_info())
+    write_to_file(CARD_INFO_DATA_PATH, json.dumps(filtered_card_info))
 
 if __name__ == '__main__':
     try:
