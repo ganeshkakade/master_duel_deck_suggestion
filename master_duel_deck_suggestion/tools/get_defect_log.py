@@ -36,7 +36,7 @@ def get_file_contents(file_path):
         with file_path.open() as file:
             return file.readlines()
     else:
-        print(f"{file_path} file does not exists")
+        print(f"{file_path} does not exists")
 
 def process_defect_logs():
     card_info = get_json_info(CARD_INFO_DATA_PATH)
@@ -89,8 +89,11 @@ def process_debug_log():
         writelines_to_file(OUT_OF_BOUND_DEFECT_LOG_PATH, out_of_bound_defect_lines) 
 
 def main():
-    process_debug_log()
-    process_defect_logs()
+    if path_exists(log_dir):
+        process_debug_log()
+        process_defect_logs()
+    else:
+        print(f"{log_dir} does not exists")
 
 if __name__ == '__main__':
     main()

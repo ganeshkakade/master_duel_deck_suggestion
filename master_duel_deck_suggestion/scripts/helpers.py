@@ -109,9 +109,9 @@ def get_json_info(file_path):
             with file_path.open() as json_file:
                 return json.load(json_file)
         except json.decoder.JSONDecodeError:
-            print(f"invalid {file_path} file")
+            print(f"invalid {file_path}")
     else:
-        print(f"{file_path} file does not exists")
+        print(f"{file_path} does not exists")
 
 def write_to_file(file_path, contents):
     with file_path.open(mode='w') as file:
