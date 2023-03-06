@@ -59,6 +59,8 @@ sort_no_owned_region_coords = get_region_coords(SORT_NO_OWNED_DESC_COORDS)
 
 reset_region_coords = get_region_coords(RESET_COORDS)
 
+S_TIME = 0.5
+
 def image_to_text_match(card):
     open_detail()
     
@@ -161,7 +163,7 @@ def move_to_select_detail():
 
 def open_detail():
     move_to_select_detail() # open card detail
-    time.sleep(0.5) # wait for detail window to open
+    time.sleep(S_TIME) # wait for detail window to open
 
 def close_detail():
     pyautogui.moveTo(close_region_coords['x'], close_region_coords['y'])
@@ -172,20 +174,21 @@ def switch_window(title):
     if handle:
         handle[0].activate()
         handle[0].maximize()
+        time.sleep(S_TIME) # wait for window to switch
     else:
         print(f"{title} window does not exists")
 
 def set_sort_filters():
     pyautogui.moveTo(sort_region_coords['x'], sort_region_coords['y'])
     pyautogui.click()
-    time.sleep(0.5) # wait for window to open
+    time.sleep(S_TIME) # wait for window to open
     pyautogui.moveTo(sort_no_owned_region_coords['x'], sort_no_owned_region_coords['y'])
     pyautogui.click()
 
 def reset_all_filters():
     pyautogui.moveTo(reset_region_coords['x'], reset_region_coords['y'])
     pyautogui.click()
-    time.sleep(0.5) # wait for reset to complete
+    time.sleep(S_TIME) # wait for reset to complete
 
 def main():
     card_owned_info = []
@@ -195,9 +198,7 @@ def main():
         switch_window('masterduel')
         
         if deck_window_exists():
-            reset_all_filters()
             set_sort_filters()
-
             card_owned_info = get_card_owned_info(card_info)
 
 if __name__ == '__main__':
