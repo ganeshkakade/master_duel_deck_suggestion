@@ -7,8 +7,7 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_filepath, 
     get_json_info, 
     write_to_file, 
-    writelines_to_file, 
-    makedirs,
+    writelines_to_file,
     decode_str
 )
 from master_duel_deck_suggestion.scripts.constants import (
@@ -51,11 +50,11 @@ def process_defect_logs():
 
         for card in card_info:
             name = card["name"]
-            if title_image_defect_lines and any(name in decode_str(line) for line in title_image_defect_lines):
+            if title_image_defect_lines and any(name in decode_str(line) or line for line in title_image_defect_lines):
                 title_image_defect_json.append(card)
-            if search_result_defect_lines and any(name in decode_str(line) for line in search_result_defect_lines):
+            if search_result_defect_lines and any(name in decode_str(line) or line for line in search_result_defect_lines):
                 search_result_defect_json.append(card)
-            if out_of_bound_defect_lines and any(name in decode_str(line) for line in out_of_bound_defect_lines):
+            if out_of_bound_defect_lines and any(name in decode_str(line) or line for line in out_of_bound_defect_lines):
                 out_of_bound_defect_json.append(card)
                    
         write_to_file(TITLE_IMAGE_DEFECT_JSON_PATH, json.dumps(title_image_defect_json))
