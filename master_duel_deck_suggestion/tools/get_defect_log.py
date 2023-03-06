@@ -30,8 +30,6 @@ TITLE_IMAGE_DEFECT_JSON_PATH = log_dir / "title_image_defect.json"
 SEARCH_RESULT_DEFECT_JSON_PATH = log_dir / "search_result_defect.json"
 OUT_OF_BOUND_DEFECT_JSON_PATH = log_dir / "out_of_bound_defect.json"
 
-makedirs(DEBUG_LOG_PATH)
-
 def get_file_contents(file_path):
     if path_exists(file_path):
         with file_path.open() as file:
@@ -59,9 +57,12 @@ def process_defect_logs():
             if out_of_bound_defect_lines and any(name in line for line in out_of_bound_defect_lines):
                 out_of_bound_defect_json.append(card)
 
-        write_to_file(TITLE_IMAGE_DEFECT_JSON_PATH, json.dumps(title_image_defect_json))
-        write_to_file(SEARCH_RESULT_DEFECT_JSON_PATH, json.dumps(search_result_defect_json))
-        write_to_file(OUT_OF_BOUND_DEFECT_JSON_PATH, json.dumps(out_of_bound_defect_json))
+        if title_image_defect_json:  
+            write_to_file(TITLE_IMAGE_DEFECT_JSON_PATH, json.dumps(title_image_defect_json))
+        if search_result_defect_json:
+            write_to_file(SEARCH_RESULT_DEFECT_JSON_PATH, json.dumps(search_result_defect_json))
+        if out_of_bound_defect_json:
+            write_to_file(OUT_OF_BOUND_DEFECT_JSON_PATH, json.dumps(out_of_bound_defect_json))
 
 def process_debug_log():
     debug_lines = get_file_contents(DEBUG_LOG_PATH)
@@ -85,9 +86,12 @@ def process_debug_log():
 
             previous_lines.append(line)
 
-        writelines_to_file(TITLE_IMAGE_DEFECT_LOG_PATH, title_image_defect_lines) 
-        writelines_to_file(SEARCH_RESULT_DEFECT_LOG_PATH, search_result_defect_lines)  
-        writelines_to_file(OUT_OF_BOUND_DEFECT_LOG_PATH, out_of_bound_defect_lines) 
+        if title_image_defect_lines:
+            writelines_to_file(TITLE_IMAGE_DEFECT_LOG_PATH, title_image_defect_lines) 
+        if search_result_defect_lines:
+            writelines_to_file(SEARCH_RESULT_DEFECT_LOG_PATH, search_result_defect_lines)  
+        if out_of_bound_defect_lines:
+            writelines_to_file(OUT_OF_BOUND_DEFECT_LOG_PATH, out_of_bound_defect_lines) 
 
 def main():
     process_debug_log()
