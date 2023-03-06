@@ -59,11 +59,13 @@ def image_to_text_match(card):
     name = normalize_str(card['name'])
     text = normalize_str(preprocess_and_ocr_image(image))
 
+    if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with name
+       return True
+
+    # log only when text does not match with name
     logger.debug(f"card name: {name}")
     logger.debug(f"extracted text: {text}")
 
-    if len(text) > 0 and (text == name or text in name): # also checks if text partially matches with the name
-       return True
     return False
 
 def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis
