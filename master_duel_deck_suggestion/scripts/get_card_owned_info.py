@@ -1,3 +1,4 @@
+import re
 import json
 import time
 
@@ -11,7 +12,8 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_region_size, 
     get_filepath, path_exists, 
     vibrant_colors_exists,
-    get_json_info
+    get_json_info,
+    unescape_ucode_with_space
 )
 from master_duel_deck_suggestion.scripts.constants import (
     SEARCH_COORDS, 
@@ -134,7 +136,7 @@ def take_title_screenshot(card):
         return screenshot
 
 def type_name_enter(card):
-    pyautogui.typewrite(card['name'])
+    pyautogui.typewrite(unescape_ucode_with_space(card["name"]))
     pyautogui.press("enter")
 
 def move_to_select(dx=0, dy=0):

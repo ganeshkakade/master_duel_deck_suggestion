@@ -76,8 +76,8 @@ def normalize_str(s):
 def alnum_str():
     return re.sub(r'[^a-zA-Z0-9]+', '_', s).strip('_').lower()
 
-def unescape_unicode(s):
-    return json.loads(f'"{s}"')
+def unescape_ucode_with_space(s):
+    return re.sub(r'[^\u0000-\u007F]+', ' ', s)
 
 def path_exists(path):
     return Path(path).exists()
