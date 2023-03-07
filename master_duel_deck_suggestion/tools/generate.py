@@ -38,10 +38,12 @@ FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 SP_TITLE_FILTERED_CARD_INFO_JSON_PATH = data_dir / SP_TITLE_FILTERED_CARD_INFO_JSON
 LIMITED_FILTERED_CARD_INFO_JSON_PATH = data_dir / LIMITED_FILTERED_CARD_INFO_JSON
 
-def dump_limited_filtered_card_info(json_filepath, n):
+def dump_limited_filtered_card_info(json_filepath, i=None, n=None):
     card_info = get_json_file(json_filepath)
-    if card_info and n <= len(card_info):
-        write_to_file(LIMITED_FILTERED_CARD_INFO_JSON_PATH, json.dumps(card_info[:n]))
+    if card_info:
+        start = i if i is not None else 0
+        end = (i + n) if (i is not None and n is not None) else None
+        write_to_file(LIMITED_FILTERED_CARD_INFO_JSON_PATH, json.dumps(card_info[start:end]))
     else:
         truncate_file(LIMITED_FILTERED_CARD_INFO_JSON_PATH)
 
@@ -67,7 +69,7 @@ def dump_debug_log():
 def main():
     dump_debug_log()
     dump_sp_title_filtered_card_info()
-    dump_limited_filtered_card_info(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, 5)
+    dump_limited_filtered_card_info(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, 0, 5)
 
 if __name__ == '__main__':
     try:
