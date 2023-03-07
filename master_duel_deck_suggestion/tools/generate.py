@@ -17,7 +17,8 @@ from master_duel_deck_suggestion.scripts.constants import (
     OUT_OF_BOUND_DEFECT_LOG,
 
     FILTERED_CARD_INFO_JSON,
-    SP_TITLE_FILTERED_CARD_INFO_JSON
+    SP_TITLE_FILTERED_CARD_INFO_JSON,
+    LIMITED_FILTERED_CARD_INFO_JSON
 )
 from master_duel_deck_suggestion.tools.debugging import (
     logger,
@@ -35,15 +36,23 @@ OUT_OF_BOUND_DEFECT_LOG_PATH = log_dir / OUT_OF_BOUND_DEFECT_LOG
 
 FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 SP_TITLE_FILTERED_CARD_INFO_JSON_PATH = data_dir / SP_TITLE_FILTERED_CARD_INFO_JSON
+LIMITED_FILTERED_CARD_INFO_JSON_PATH = data_dir / LIMITED_FILTERED_CARD_INFO_JSON
 
-def generate_dump_sp_title_filtered_card_info():
+def dump_limited_filtered_card_info(json_filepath, n):
+    card_info = get_json_file(json_filepath)
+    if card_info and n <= len(card_info):
+        write_to_file(LIMITED_FILTERED_CARD_INFO_JSON_PATH, json.dumps(card_info[:n]))
+    else:
+        truncate_file(LIMITED_FILTERED_CARD_INFO_JSON_PATH)
+
+def dump_sp_title_filtered_card_info():
     filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
     if filtered_card_info:
         regex = re.compile(r'[^a-zA-Z0-9\s]+')
         sp_title_filtered_card_info = [o for o in filtered_card_info if regex.search(o.get("name"))]
         write_to_file(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, json.dumps(sp_title_filtered_card_info))
 
-def generate_dump_debug_log():
+def dump_debug_log():
     filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
     if filtered_card_info:
         truncate_file(TITLE_IMAGE_DEFECT_LOG_PATH)
@@ -56,8 +65,9 @@ def generate_dump_debug_log():
             out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card['name']}")
 
 def main():
-    generate_dump_debug_log()
-    generate_dump_sp_title_filtered_card_info()
+    dump_debug_log()
+    dump_sp_title_filtered_card_info()
+    dump_limited_filtered_card_info(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, 5)
 
 if __name__ == '__main__':
     try:
