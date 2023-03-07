@@ -16,9 +16,11 @@ from master_duel_deck_suggestion.scripts.constants import (
     SEARCH_SELECTION_DEFECT_LOG,
     OUT_OF_BOUND_DEFECT_LOG,
 
+    CARD_INFO_JSON,
     FILTERED_CARD_INFO_JSON,
     SP_TITLE_FILTERED_CARD_INFO_JSON,
-    LIMITED_FILTERED_CARD_INFO_JSON
+    LIMITED_FILTERED_CARD_INFO_JSON,
+    DIFF_CARD_INFO_JSON
 )
 from master_duel_deck_suggestion.tools.debugging import (
     logger,
@@ -34,9 +36,23 @@ TITLE_IMAGE_DEFECT_LOG_PATH = log_dir / TITLE_IMAGE_DEFECT_LOG
 SEARCH_SELECTION_DEFECT_LOG_PATH = log_dir / SEARCH_SELECTION_DEFECT_LOG
 OUT_OF_BOUND_DEFECT_LOG_PATH = log_dir / OUT_OF_BOUND_DEFECT_LOG
 
+CARD_INFO_JSON_PATH = data_dir / CARD_INFO_JSON
 FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 SP_TITLE_FILTERED_CARD_INFO_JSON_PATH = data_dir / SP_TITLE_FILTERED_CARD_INFO_JSON
 LIMITED_FILTERED_CARD_INFO_JSON_PATH = data_dir / LIMITED_FILTERED_CARD_INFO_JSON
+DIFF_CARD_INFO_JSON_PATH = data_dir / DIFF_CARD_INFO_JSON
+
+def dump_diff_filtered_card_info(json_filepath1, json_filepath2):
+    card_info1 = get_json_file(json_filepath1)
+    card_info2 = get_json_file(json_filepath2)
+    if card_info1 and card_info2:
+        set1 = set(o['_id'] for o in card_info1)
+        set2 = set(o['_id'] for o in card_info2)
+
+        diff = list(set1.symmetric_difference(set2))
+
+        diff_card_info = [o for o in card_info1 + card_info2 if o.get('_id') in diff]
+        write_to_file(DIFF_CARD_INFO_JSON_PATH, json.dumps(diff_card_info))
 
 def dump_limited_filtered_card_info(json_filepath, i=None, n=None):
     card_info = get_json_file(json_filepath)
@@ -70,6 +86,7 @@ def main():
     dump_debug_log()
     dump_sp_title_filtered_card_info()
     dump_limited_filtered_card_info(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, 0, 5)
+    dump_diff_filtered_card_info(CARD_INFO_JSON_PATH, FILTERED_CARD_INFO_JSON_PATH)
 
 if __name__ == '__main__':
     try:

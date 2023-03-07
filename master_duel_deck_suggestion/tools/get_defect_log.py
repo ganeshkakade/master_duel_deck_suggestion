@@ -44,7 +44,7 @@ def process_defect_logs():
         out_of_bound_defect_json = []
 
         for card in filtered_card_info:
-            name = card["name"]
+            name = card['name']
             if title_image_defect_lines and any(name in line for line in title_image_defect_lines):
                 title_image_defect_json.append(card)
             if search_selection_defect_lines and any(name in line for line in search_selection_defect_lines):

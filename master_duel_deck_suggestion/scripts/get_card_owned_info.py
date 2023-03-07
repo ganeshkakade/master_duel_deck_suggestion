@@ -11,6 +11,7 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_filepath, 
     vibrant_colors_exists,
     get_json_file,
+    write_to_file,
     normalize_str
 )
 from master_duel_deck_suggestion.scripts.constants import (
@@ -160,7 +161,7 @@ def take_title_screenshot(card):
         return screenshot
 
 def type_name_enter(card):
-    pyautogui.write(card["name"])
+    pyautogui.write(card['name'])
     pyautogui.press("enter")
 
 def move_to_select(dx=0, dy=0):
