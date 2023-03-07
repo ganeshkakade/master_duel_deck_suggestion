@@ -1,6 +1,5 @@
 import re
 import json
-import codecs
 from pathlib import Path
 
 import shutil
@@ -9,7 +8,7 @@ import numpy as np
 from pytesseract import pytesseract
 from PIL import Image, ImageFilter, ImageEnhance
 
-from master_duel_deck_suggestion.scripts.constants import FIXED_SCREEN_SIZE
+from master_duel_deck_suggestion.scripts.constants import FIXED_SCREEN_SIZE, FILE_CONFIG
 
 tesseract_path = shutil.which('tesseract')
 if tesseract_path is not None:
@@ -66,24 +65,11 @@ def vibrant_colors_exists(image):
     else:
         return False
 
-def normalize_str(s):
-    return (
-        re.sub(r'[^\w\s-]', '', s)
-        .strip()
-        .lower()
-    )
-
-def alnum_str():
-    return re.sub(r'[^a-zA-Z0-9]+', '_', s).strip('_').lower()
-
-def unescape_ucode_with_space(s):
-    return re.sub(r'[^\u0000-\u007F]+', ' ', s)
-
 def path_exists(path):
-    return Path(path).exists()
+    return path.exists()
 
 def makedirs(path):
-    Path(path).parent.mkdir(exist_ok=True, parents=True)
+    Path(path).mkdir(exist_ok=True, parents=True)
 
 def get_filesize(path):
     return Path(path).stat().st_size
@@ -103,10 +89,10 @@ def get_region_size(size):
     h = h_size_ratio * size['height']
     return {'width': w, 'height': h}
 
-def get_json_info(file_path):
-    if path_exists(file_path):
+def get_json_file(file_path):
+    if file_path.exists():
         try:
-            with file_path.open() as json_file:
+            with file_path.open(**FILE_CONFIG) as json_file:
                 return json.load(json_file)
         except json.decoder.JSONDecodeError:
             print(f"invalid {file_path}")
@@ -114,13 +100,27 @@ def get_json_info(file_path):
         print(f"{file_path} does not exists")
 
 def write_to_file(file_path, contents):
-    with file_path.open(mode='w') as file:
+    with file_path.open(mode='w', **FILE_CONFIG) as file:
         file.write(contents)
 
 def writelines_to_file(file_path, contents):
-    with file_path.open(mode='w') as file:
+    with file_path.open(mode='w', **FILE_CONFIG) as file:
             file.writelines(contents)
 
-def decode_str(s):
-    return codecs.decode(s, 'unicode_escape')
+def get_log_file(file_path):
+    if file_path.exists():
+        with file_path.open(**FILE_CONFIG) as file:
+            return file.readlines()
+    else:
+        print(f"{file_path} does not exists")
 
+def remove_file(file_path):
+    if file_path.exists():
+        file_path.unlink()
+
+def truncate_file(file_path):
+     with file_path.open(mode='w', **FILE_CONFIG) as file:
+        pass
+
+def normalize_str(s):
+    return s.strip().lower()

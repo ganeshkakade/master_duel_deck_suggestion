@@ -4,12 +4,14 @@ import json
 import requests
 
 from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs, write_to_file
+from master_duel_deck_suggestion.scripts.constants import CARD_INFO_JSON, FILTERED_CARD_INFO_JSON
 from master_duel_deck_suggestion.tools.debugging import logger
 
 data_dir = get_filepath(__file__, "../data")
-CARD_INFO_DATA_PATH = data_dir / "card_info.json"
+CARD_INFO_DATA_PATH = data_dir / CARD_INFO_JSON
+FILTERED_CARD_INFO_DATA_PATH = data_dir / FILTERED_CARD_INFO_JSON
 
-makedirs(CARD_INFO_DATA_PATH)
+makedirs(data_dir)
 
 def get_card_info(result=[], page=1):
     logger.debug(f"page: {page}")
@@ -33,8 +35,11 @@ def filter_card_info(card_info):
     return filtered_card_info
 
 def main():
-    filtered_card_info = filter_card_info(get_card_info())
-    write_to_file(CARD_INFO_DATA_PATH, json.dumps(filtered_card_info))
+    card_info = get_card_info()
+    write_to_file(CARD_INFO_DATA_PATH, json.dumps(card_info))
+
+    filtered_card_info = filter_card_info(card_info)
+    write_to_file(FILTERED_CARD_INFO_DATA_PATH, json.dumps(filtered_card_info))
 
 if __name__ == '__main__':
     try:
