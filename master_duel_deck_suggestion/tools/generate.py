@@ -46,8 +46,8 @@ def dump_diff_filtered_card_info(json_filepath1, json_filepath2):
     card_info1 = get_json_file(json_filepath1)
     card_info2 = get_json_file(json_filepath2)
     if card_info1 and card_info2:
-        set1 = set(o['_id'] for o in card_info1)
-        set2 = set(o['_id'] for o in card_info2)
+        set1 = set(o.get('_id') for o in card_info1)
+        set2 = set(o.get('_id') for o in card_info2)
 
         diff = list(set1.symmetric_difference(set2))
 
@@ -78,9 +78,9 @@ def dump_debug_log():
         truncate_file(OUT_OF_BOUND_DEFECT_LOG_PATH)
 
         for card in filtered_card_info:
-            title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card['name']}")
-            search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card['name']}")
-            out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card['name']}")
+            title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
+            search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
+            out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
 
 def main():
     dump_debug_log()

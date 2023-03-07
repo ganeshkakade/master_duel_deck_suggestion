@@ -17,8 +17,8 @@ else:
     pytesseract.tesseract_cmd =  r"C:\Users\UserName\AppData\Local\Programs\Tesseract-OCR\tesseract.exe"
 
 size = pyautogui.size()
-w_size_ratio = size.width / FIXED_SCREEN_SIZE['width']
-h_size_ratio = size.height / FIXED_SCREEN_SIZE['height']
+w_size_ratio = size.width / FIXED_SCREEN_SIZE.get('width')
+h_size_ratio = size.height / FIXED_SCREEN_SIZE.get('height')
 
 def preprocess_and_ocr_image(image):
     # enhance the image for better OCR accuracy
@@ -80,13 +80,13 @@ def get_filepath(file_instance, relative_path):
     return file_path 
 
 def get_region_coords(coords):
-    dx = w_size_ratio * coords['x']
-    dy = h_size_ratio * coords['y']
+    dx = w_size_ratio * coords.get('x')
+    dy = h_size_ratio * coords.get('y')
     return {'x': dx, 'y': dy}
 
 def get_region_size(size):
-    w = w_size_ratio * size['width']
-    h = h_size_ratio * size['height']
+    w = w_size_ratio * size.get('width')
+    h = h_size_ratio * size.get('height')
     return {'width': w, 'height': h}
 
 def get_json_file(file_path):
