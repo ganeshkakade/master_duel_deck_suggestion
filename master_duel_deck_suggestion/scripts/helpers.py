@@ -1,5 +1,6 @@
 import re
 import json
+import string
 from pathlib import Path
 
 import shutil
@@ -41,7 +42,7 @@ def preprocess_and_ocr_image(image):
     text = pytesseract.image_to_string(image)
     return text
 
-def vibrant_colors_exists(image):
+def vibrant_colorfulness(image):
     # convert the image to RGB color space
     image = image.convert("RGB")
 
@@ -60,10 +61,11 @@ def vibrant_colors_exists(image):
     colorful_threshold = 25
 
     # check if the image is colorful or not
-    if avg_std > colorful_threshold:
-        return True
-    else:
-        return False
+    # if avg_std > colorful_threshold:
+    #     return True
+    # else:
+    #     return False
+    return avg_std
 
 def path_exists(path):
     return path.exists()
@@ -124,3 +126,7 @@ def truncate_file(file_path):
 
 def normalize_str(s):
     return s.strip().lower()
+
+def replace_non_ascii_with_space(s):
+    printable_chars = set(string.printable)
+    return ''.join(char if char in printable_chars else ' ' for char in s)

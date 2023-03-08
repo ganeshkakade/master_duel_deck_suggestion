@@ -8,6 +8,10 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_log_file
 )
 from master_duel_deck_suggestion.scripts.constants import (
+    TITLE_IMAGE_DEFECT,
+    SEARCH_SELECTION_DEFECT,
+    OUT_OF_BOUND_DEFECT,
+
     TITLE_IMAGE_DEFECT_LOG,
     SEARCH_SELECTION_DEFECT_LOG,
     OUT_OF_BOUND_DEFECT_LOG,
@@ -43,13 +47,17 @@ def process_defect_logs():
         search_selection_defect_json = []
         out_of_bound_defect_json = []
 
+        title_image_defect_set = set(line[line.index(TITLE_IMAGE_DEFECT) + len(TITLE_IMAGE_DEFECT) + 2:].strip() for line in title_image_defect_lines)
+        search_selection_defect_set = set(line[line.index(SEARCH_SELECTION_DEFECT) + len(SEARCH_SELECTION_DEFECT) + 2:].strip() for line in search_selection_defect_lines)
+        out_of_bound_defect_set = set(line[line.index(OUT_OF_BOUND_DEFECT) + len(OUT_OF_BOUND_DEFECT) + 2:].strip() for line in out_of_bound_defect_lines)
+
         for card in filtered_card_info:
             name = card.get('name')
-            if title_image_defect_lines and any(name in line for line in title_image_defect_lines):
+            if name in title_image_defect_set:
                 title_image_defect_json.append(card)
-            if search_selection_defect_lines and any(name in line for line in search_selection_defect_lines):
+            if name in search_selection_defect_set:
                 search_selection_defect_json.append(card)
-            if out_of_bound_defect_lines and any(name in line for line in out_of_bound_defect_lines):
+            if name in out_of_bound_defect_set:
                 out_of_bound_defect_json.append(card)
 
         if path_exists(TITLE_IMAGE_DEFECT_LOG_PATH):
