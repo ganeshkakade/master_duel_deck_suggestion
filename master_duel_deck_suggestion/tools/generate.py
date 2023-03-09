@@ -20,7 +20,9 @@ from master_duel_deck_suggestion.scripts.constants import (
     FILTERED_CARD_INFO_JSON,
     SP_TITLE_FILTERED_CARD_INFO_JSON,
     LIMITED_FILTERED_CARD_INFO_JSON,
-    DIFF_CARD_INFO_JSON
+    DIFF_CARD_INFO_JSON,
+
+    EXISTS_THRESHOLD
 )
 from master_duel_deck_suggestion.tools.debugging import (
     logger,
@@ -31,7 +33,7 @@ from master_duel_deck_suggestion.tools.debugging import (
 from master_duel_deck_suggestion.scripts.get_card_owned_info import (
     move_to_search,
     type_name_enter,
-    search_selection_exists,
+    search_selection_avg_std,
     switch_window,
     deck_window_exists,
     set_sort_filters
@@ -95,7 +97,6 @@ def dump_actual_search_selection_defect_log(json_filepath):
     if card_info:
         truncate_file(SEARCH_SELECTION_DEFECT_LOG_PATH)
 
-        threshold = 10
         switch_window('masterduel')
 
         if deck_window_exists():
@@ -103,7 +104,7 @@ def dump_actual_search_selection_defect_log(json_filepath):
             for card in card_info:
                 move_to_search()
                 type_name_enter(card)
-                if search_selection_exists(0, 0) < threshold:
+                if search_selection_avg_std(0, 0) < EXISTS_THRESHOLD:
                     search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
 
 def main():

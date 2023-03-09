@@ -9,10 +9,11 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_region_coords, 
     get_region_size, 
     get_filepath, 
-    vibrant_colors_exists,
+    vibrant_colorfulness,
     get_json_file,
     write_to_file,
-    normalize_str
+    normalize_str,
+    replace_non_ascii_with_space
 )
 from master_duel_deck_suggestion.scripts.constants import (
     S_TIME,
@@ -34,11 +35,17 @@ from master_duel_deck_suggestion.scripts.constants import (
     SAVE_SIZE, 
     SAVE_COORDS,
 
+    FINISH_OWNED_SIZE,
+    FINISH_OWNED_COORDS,
+
     TITLE_IMAGE_DEFECT,
     SEARCH_SELECTION_DEFECT, 
     OUT_OF_BOUND_DEFECT,
 
-    FILTERED_CARD_INFO_JSON
+    FILTERED_CARD_INFO_JSON,
+    CARD_OWNED_INFO_JSON,
+
+    EXISTS_THRESHOLD
 )
 from master_duel_deck_suggestion.tools.debugging import (
     logger,
@@ -50,6 +57,7 @@ from master_duel_deck_suggestion.tools.debugging import (
 data_dir = get_filepath(__file__, "../data")
 
 FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
+CARD_OWNED_INFO_JSON_PATH = data_dir / CARD_OWNED_INFO_JSON
 
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
@@ -70,6 +78,9 @@ save_region_coords = get_region_coords(SAVE_COORDS)
 sort_region_coords = get_region_coords(SORT_COORDS)
 sort_no_owned_region_coords = get_region_coords(SORT_NO_OWNED_DESC_COORDS)
 
+finish_owned_region_size = get_region_size(FINISH_OWNED_SIZE)
+finish_owned_region_coords = get_region_coords(FINISH_OWNED_COORDS)
+
 reset_region_coords = get_region_coords(RESET_COORDS)
 
 def image_to_text_match(card):
@@ -82,61 +93,92 @@ def image_to_text_match(card):
     close_detail()
 
     if text and (text == name or text in name): # checks for text partial match with name
-       return True
+        return True
     else:
         title_image_defect_logger.debug(f"card name: {name}")
         title_image_defect_logger.debug(f"extracted text: {text}")
         return False
 
-def check_search_selection(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis
-    if not repeat:
-        time.sleep(2) # wait for search results to load
-    
-    if not search_selection_exists(dx, dy):
-        search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
-        return False
-    
-    move_to_select(dx, dy) # select card from search results 
+def search_card_exists(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis 
+
+    avg_std = search_selection_avg_std(dx, dy)
+
+    if not avg_std > EXISTS_THRESHOLD:
+        if not repeat:
+            return False, SEARCH_SELECTION_DEFECT
+        else:
+            return False, TITLE_IMAGE_DEFECT
+ 
+    move_to_select(dx, dy) # select card from search results
 
     if image_to_text_match(card):
-        return True
-    else:
-        title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
+        return True, None
 
     repeat += 1
     if repeat == 30: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
         out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
-        return False
+        return False, OUT_OF_BOUND_DEFECT
 
     if repeat and repeat % 6 == 0:
         dx = 0
         dy = dy + select_region_coords_delta.get('y')
     else:
         dx = dx + select_region_coords_delta.get('x')
-
-    return check_search_selection(card, repeat, dx, dy)
-
-def search_selection_exists(dx, dy):
-    with pyautogui.screenshot(region=(
-        card_selection_region_coords.get('x') + dx, 
-        card_selection_region_coords.get('y') + dy, 
-        card_selection_region_size.get('width'), 
-        card_selection_region_size.get('height')
-    )) as selection_image:
-        return vibrant_colors_exists(selection_image)
     
+    card_exists, defect_type = search_card_exists(card, repeat, dx, dy)
+    return card_exists, defect_type
+
+def get_card_finish_owned_info(card):
+    with pyautogui.screenshot(region=(
+        finish_owned_region_coords.get('x'), 
+        finish_owned_region_coords.get('y'), 
+        finish_owned_region_size.get('width'), 
+        finish_owned_region_size.get('height')
+    )) as finish_owned_image:
+        finish_owned = preprocess_and_ocr_image(finish_owned_image).strip()
+        numbers = [int(x) if x.isdigit() else 0 for x in finish_owned.split('/')]
+        while len(numbers) < 3:
+            numbers.append(0)
+        return numbers[:3] 
+   
 def get_card_owned_info(filtered_card_info):
     card_owned = []
 
     for card in filtered_card_info:
         move_to_search()
         type_name_enter(card)
-        
-        if check_search_selection(card):
-            # get more card owned info with preprocess and ocr
+
+        card_exists, defect_type = search_card_exists(card)
+
+        if card_exists:
+            basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info(card)
+            card["basic_finish_owned"] = basic_finish_owned
+            card["glossy_finish_owned"] = glossy_finish_owned
+            card["royal_finish_owned"] = royal_finish_owned
+            card_owned.append(card)
+        else:
+            card["basic_finish_owned"] = 0
+            card["glossy_finish_owned"] = 0
+            card["royal_finish_owned"] = 0
             card_owned.append(card)
 
+            if defect_type == TITLE_IMAGE_DEFECT:
+                title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
+            if defect_type == SEARCH_SELECTION_DEFECT:
+                search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
+            if defect_type == OUT_OF_BOUND_DEFECT:
+                out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
+
     return card_owned
+
+def search_selection_avg_std(dx, dy):
+    with pyautogui.screenshot(region=(
+        card_selection_region_coords.get('x') + dx, 
+        card_selection_region_coords.get('y') + dy, 
+        card_selection_region_size.get('width'), 
+        card_selection_region_size.get('height')
+    )) as selection_image:
+        return vibrant_colorfulness(selection_image)
 
 def deck_window_exists():
     with pyautogui.screenshot(region=(
@@ -161,8 +203,10 @@ def take_title_screenshot(card):
         return screenshot
 
 def type_name_enter(card):
-    pyautogui.write(card.get('name'))
+    name = replace_non_ascii_with_space(card.get('name'))
+    pyautogui.write(name)
     pyautogui.press("enter")
+    time.sleep(S_TIME + 1.5) # wait for search results to load
 
 def move_to_select(dx=0, dy=0):
     pyautogui.moveTo(select_region_coords.get('x') + dx, select_region_coords.get('y') + dy)

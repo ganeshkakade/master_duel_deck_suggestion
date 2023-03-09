@@ -37,8 +37,13 @@ CARD_SELECTION_COORDS = {'x': 1320, 'y': 320}
 SAVE_SIZE = {'width': 120, 'height': 25}
 SAVE_COORDS = {'x': 1650, 'y': 35}
 
+FINISH_OWNED_SIZE = {'width': 85, 'height': 35}
+FINISH_OWNED_COORDS = {'x': 365, 'y': 345}
+
 FILE_CONFIG = {
     "encoding": "utf-8"
 }
 
-S_TIME = .5
+S_TIME = 1
+
+EXISTS_THRESHOLD = 10
