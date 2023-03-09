@@ -47,9 +47,9 @@ def process_defect_logs():
         search_selection_defect_json = []
         out_of_bound_defect_json = []
 
-        title_image_defect_set = set(line[line.index(TITLE_IMAGE_DEFECT) + len(TITLE_IMAGE_DEFECT) + 2:].strip() for line in title_image_defect_lines)
-        search_selection_defect_set = set(line[line.index(SEARCH_SELECTION_DEFECT) + len(SEARCH_SELECTION_DEFECT) + 2:].strip() for line in search_selection_defect_lines)
-        out_of_bound_defect_set = set(line[line.index(OUT_OF_BOUND_DEFECT) + len(OUT_OF_BOUND_DEFECT) + 2:].strip() for line in out_of_bound_defect_lines)
+        title_image_defect_set = set(line[line.index(TITLE_IMAGE_DEFECT) + len(TITLE_IMAGE_DEFECT) + 2:].strip() for line in title_image_defect_lines if TITLE_IMAGE_DEFECT in line)
+        search_selection_defect_set = set(line[line.index(SEARCH_SELECTION_DEFECT) + len(SEARCH_SELECTION_DEFECT) + 2:].strip() for line in search_selection_defect_lines if SEARCH_SELECTION_DEFECT in line)
+        out_of_bound_defect_set = set(line[line.index(OUT_OF_BOUND_DEFECT) + len(OUT_OF_BOUND_DEFECT) + 2:].strip() for line in out_of_bound_defect_lines if OUT_OF_BOUND_DEFECT in line)
 
         for card in filtered_card_info:
             name = card.get('name')

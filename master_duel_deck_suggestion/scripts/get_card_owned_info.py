@@ -1,5 +1,6 @@
 import json
 import time
+from difflib import SequenceMatcher
 
 import pyautogui
 import pygetwindow
@@ -13,7 +14,8 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_json_file,
     write_to_file,
     normalize_str,
-    replace_non_ascii_with_space
+    replace_non_ascii_with_space,
+    contains_non_alphanumeric
 )
 from master_duel_deck_suggestion.scripts.constants import (
     S_TIME,
@@ -87,17 +89,21 @@ def image_to_text_match(card):
     open_detail()
     
     image = take_title_screenshot(card)
-    name = normalize_str(card.get('name'))
+    card_name = card.get('name')
+    name = normalize_str(card_name)
     text = normalize_str(preprocess_and_ocr_image(image))
 
     close_detail()
 
     if text and (text == name or text in name): # checks for text partial match with name
         return True
-    else:
-        title_image_defect_logger.debug(f"card name: {name}")
-        title_image_defect_logger.debug(f"extracted text: {text}")
-        return False
+
+    if text and contains_non_alphanumeric(card_name) and SequenceMatcher(None, text, name).ratio() >= 0.8:
+        return True
+
+    title_image_defect_logger.debug(f"card name: {name}")
+    title_image_defect_logger.debug(f"extracted text: {text}")
+    return False
 
 def search_card_exists(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x-axis, y-axis 
 

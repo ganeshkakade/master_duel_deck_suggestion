@@ -130,3 +130,9 @@ def normalize_str(s):
 def replace_non_ascii_with_space(s):
     printable_chars = set(string.printable)
     return ''.join(char if char in printable_chars else ' ' for char in s)
+
+def contains_non_alphanumeric(s):
+    pattern = re.compile('[^a-zA-Z0-9\s]')
+    match = pattern.search(s)
+    if match: return True
+    else: return False
