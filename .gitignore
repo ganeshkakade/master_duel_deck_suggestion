@@ -160,5 +160,5 @@ cython_debug/
 #.idea/
 
 # Custom folders
-/logs/
-/data/
+logs/
+data/
