@@ -122,7 +122,6 @@ def search_card_exists(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x
 
     repeat += 1
     if repeat == 30: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
-        out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
         return False, OUT_OF_BOUND_DEFECT
 
     if repeat and repeat % 6 == 0:
@@ -262,6 +261,7 @@ def main():
         
         if deck_window_exists():
             set_sort_filters()
+            filtered_card_info = sorted(filtered_card_info, key=lambda x: x.get('name'))
             card_owned_info = get_card_owned_info(filtered_card_info)
             write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 

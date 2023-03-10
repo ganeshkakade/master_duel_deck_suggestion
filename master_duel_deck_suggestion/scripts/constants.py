@@ -44,6 +44,6 @@ FILE_CONFIG = {
     "encoding": "utf-8"
 }
 
-S_TIME = 1
+S_TIME = 0.5
 
 EXISTS_THRESHOLD = 10
