@@ -40,10 +40,13 @@ SAVE_COORDS = {'x': 1650, 'y': 35}
 FINISH_OWNED_SIZE = {'width': 85, 'height': 35}
 FINISH_OWNED_COORDS = {'x': 365, 'y': 345}
 
+CAN_DISMANTLE_SIZE = {'width': 235, 'height': 25}
+CAN_DISMANTLE_COORDS = {'x': 220, 'y': 385}
+
 FILE_CONFIG = {
     "encoding": "utf-8"
 }
 
 S_TIME = 0.5
 
-EXISTS_THRESHOLD = 10
+EXISTS_THRESHOLD = 25

@@ -2,6 +2,7 @@ import re
 import json
 import string
 from pathlib import Path
+from difflib import SequenceMatcher
 
 import shutil
 import pyautogui
@@ -136,3 +137,14 @@ def contains_non_alphanumeric(s):
     match = pattern.search(s)
     if match: return True
     else: return False
+
+def sequence_matcher_ratio(s1, s2):
+    return SequenceMatcher(None, s1, s2).ratio()
+
+def extract_number_from_string(s):
+    match = re.search(r'\d+', s)
+    if match:
+        number = int(match.group())
+    else:
+        number = 0
+    return number

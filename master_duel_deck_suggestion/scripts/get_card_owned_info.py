@@ -1,6 +1,5 @@
 import json
 import time
-from difflib import SequenceMatcher
 
 import pyautogui
 import pygetwindow
@@ -15,7 +14,9 @@ from master_duel_deck_suggestion.scripts.helpers import (
     write_to_file,
     normalize_str,
     replace_non_ascii_with_space,
-    contains_non_alphanumeric
+    contains_non_alphanumeric,
+    sequence_matcher_ratio,
+    extract_number_from_string
 )
 from master_duel_deck_suggestion.scripts.constants import (
     S_TIME,
@@ -39,6 +40,9 @@ from master_duel_deck_suggestion.scripts.constants import (
 
     FINISH_OWNED_SIZE,
     FINISH_OWNED_COORDS,
+
+    CAN_DISMANTLE_SIZE,
+    CAN_DISMANTLE_COORDS,
 
     TITLE_IMAGE_DEFECT,
     SEARCH_SELECTION_DEFECT, 
@@ -83,12 +87,15 @@ sort_no_owned_region_coords = get_region_coords(SORT_NO_OWNED_DESC_COORDS)
 finish_owned_region_size = get_region_size(FINISH_OWNED_SIZE)
 finish_owned_region_coords = get_region_coords(FINISH_OWNED_COORDS)
 
+can_dismantle_region_size = get_region_size(CAN_DISMANTLE_SIZE)
+can_dismantle_region_coords = get_region_coords(CAN_DISMANTLE_COORDS)
+
 reset_region_coords = get_region_coords(RESET_COORDS)
 
 def image_to_text_match(card):
     open_detail()
     
-    image = take_title_screenshot(card)
+    image = take_title_screenshot()
     card_name = card.get('name')
     name = normalize_str(card_name)
     text = normalize_str(preprocess_and_ocr_image(image))
@@ -98,7 +105,7 @@ def image_to_text_match(card):
     if text and (text == name or text in name): # checks for text partial match with name
         return True
 
-    if text and contains_non_alphanumeric(card_name) and SequenceMatcher(None, text, name).ratio() >= 0.8:
+    if text and contains_non_alphanumeric(card_name) and sequence_matcher_ratio(text, name) >= 0.8:
         return True
 
     title_image_defect_logger.debug(f"card name: {name}")
@@ -133,7 +140,7 @@ def search_card_exists(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x
     card_exists, defect_type = search_card_exists(card, repeat, dx, dy)
     return card_exists, defect_type
 
-def get_card_finish_owned_info(card):
+def get_card_finish_owned_info():
     with pyautogui.screenshot(region=(
         finish_owned_region_coords.get('x'), 
         finish_owned_region_coords.get('y'), 
@@ -144,8 +151,18 @@ def get_card_finish_owned_info(card):
         numbers = [int(x) if x.isdigit() else 0 for x in finish_owned.split('/')]
         while len(numbers) < 3:
             numbers.append(0)
-        return numbers[:3] 
-   
+        return numbers[:3]
+
+def get_card_can_dismantle_info():
+    with pyautogui.screenshot(region=(
+        can_dismantle_region_coords.get('x'), 
+        can_dismantle_region_coords.get('y'), 
+        can_dismantle_region_size.get('width'), 
+        can_dismantle_region_size.get('height')
+    )) as can_dismantle_image:
+        can_dismantle = preprocess_and_ocr_image(can_dismantle_image).strip()
+        return extract_number_from_string(can_dismantle)
+        
 def get_card_owned_info(filtered_card_info):
     card_owned = []
 
@@ -156,15 +173,17 @@ def get_card_owned_info(filtered_card_info):
         card_exists, defect_type = search_card_exists(card)
 
         if card_exists:
-            basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info(card)
+            basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info()
             card["basic_finish_owned"] = basic_finish_owned
             card["glossy_finish_owned"] = glossy_finish_owned
             card["royal_finish_owned"] = royal_finish_owned
+            card["can_dismantle"] = 0
             card_owned.append(card)
         else:
             card["basic_finish_owned"] = 0
             card["glossy_finish_owned"] = 0
             card["royal_finish_owned"] = 0
+            card["can_dismantle"] = 0
             card_owned.append(card)
 
             if defect_type == TITLE_IMAGE_DEFECT:
@@ -198,7 +217,7 @@ def deck_window_exists():
             print("switch to create new deck in masterduel before you proceed")
             return False
 
-def take_title_screenshot(card):
+def take_title_screenshot():
     with pyautogui.screenshot(region=(
         title_region_coords.get('x'), 
         title_region_coords.get('y'), 
