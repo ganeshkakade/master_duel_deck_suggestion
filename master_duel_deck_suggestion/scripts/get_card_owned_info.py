@@ -171,20 +171,22 @@ def get_card_owned_info(filtered_card_info):
         type_name_enter(card)
 
         card_exists, defect_type = search_card_exists(card)
+        new_card = card.copy()
 
         if card_exists:
             basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info()
-            card["basic_finish_owned"] = basic_finish_owned
-            card["glossy_finish_owned"] = glossy_finish_owned
-            card["royal_finish_owned"] = royal_finish_owned
-            card["can_dismantle"] = 0
-            card_owned.append(card)
+
+            new_card["basic_finish_owned"] = basic_finish_owned
+            new_card["glossy_finish_owned"] = glossy_finish_owned
+            new_card["royal_finish_owned"] = royal_finish_owned
+            new_card["can_dismantle"] = 0
+            card_owned.append(new_card)
         else:
-            card["basic_finish_owned"] = 0
-            card["glossy_finish_owned"] = 0
-            card["royal_finish_owned"] = 0
-            card["can_dismantle"] = 0
-            card_owned.append(card)
+            new_card["basic_finish_owned"] = 0
+            new_card["glossy_finish_owned"] = 0
+            new_card["royal_finish_owned"] = 0
+            new_card["can_dismantle"] = 0
+            card_owned.append(new_card)
 
             if defect_type == TITLE_IMAGE_DEFECT:
                 title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
