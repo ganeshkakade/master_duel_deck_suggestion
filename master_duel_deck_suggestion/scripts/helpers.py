@@ -61,11 +61,6 @@ def vibrant_colorfulness(image):
     # define a threshold for colorfulness
     colorful_threshold = 25
 
-    # check if the image is colorful or not
-    # if avg_std > colorful_threshold:
-    #     return True
-    # else:
-    #     return False
     return avg_std
 
 def path_exists(path):

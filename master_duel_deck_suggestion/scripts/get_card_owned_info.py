@@ -102,7 +102,7 @@ def image_to_text_match(card):
 
     close_detail()
 
-    if text and (text == name or text in name): # checks for text partial match with name
+    if text and (text == name or text in name):
         return True
 
     if text and contains_non_alphanumeric(card_name) and sequence_matcher_ratio(text, name) >= 0.8:
@@ -128,7 +128,7 @@ def search_card_exists(card, repeat=0, dx=0, dy=0): # dx, dy -> movement along x
         return True, None
 
     repeat += 1
-    if repeat == 30: # max repeat limit 30. # horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
+    if repeat == 30: # max repeat limit 30. horizontal limit 6, vertical limit 5 i.e 5 x 6 = 30
         return False, OUT_OF_BOUND_DEFECT
 
     if repeat and repeat % 6 == 0:
@@ -223,7 +223,7 @@ def take_title_screenshot():
         title_region_coords.get('y'), 
         title_region_size.get('width'), 
         title_region_size.get('height')
-    )) as screenshot: # based on default: 1920x1080 but should adjust acc. to screen resolution
+    )) as screenshot: # based on default: 1920x1080 but it should adjust based on screen resolution
         return screenshot
 
 def type_name_enter(card):
