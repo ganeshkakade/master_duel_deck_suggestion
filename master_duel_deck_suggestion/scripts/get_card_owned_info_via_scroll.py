@@ -1,3 +1,4 @@
+# this experimental module may not provide accurate information about owned cards since scrolling is unreliable and limited upto first 30 cards only
 import json
 
 from master_duel_deck_suggestion.scripts.helpers import (

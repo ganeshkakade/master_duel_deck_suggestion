@@ -1,3 +1,4 @@
+# this experimental module does not provide information on which cards can be dismantled
 import json
 import time
 
