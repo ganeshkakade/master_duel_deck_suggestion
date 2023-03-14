@@ -1,6 +1,7 @@
 import re
 import json
 import string
+import random
 from pathlib import Path
 from difflib import SequenceMatcher
 
@@ -149,3 +150,6 @@ def extract_number_from_string(s):
 
 def sort_by(arr, key):
     return sorted(arr, key=lambda x: x.get(key))
+
+def rand(m, n):
+    return random.randint(m, n)

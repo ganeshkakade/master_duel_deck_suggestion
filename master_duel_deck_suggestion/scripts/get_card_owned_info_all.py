@@ -40,10 +40,10 @@ def search_card_exists_all(card, repeat=0, dx=0, dy=0):
         basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info()
         can_dismantle = get_card_can_dismantle_info()
 
-        card["basic_finish_owned"] = basic_finish_owned
-        card["glossy_finish_owned"] = glossy_finish_owned
-        card["royal_finish_owned"] = royal_finish_owned
-        card["can_dismantle"] = card["can_dismantle"] + can_dismantle
+        card['basic_finish_owned'] = basic_finish_owned
+        card['glossy_finish_owned'] = glossy_finish_owned
+        card['royal_finish_owned'] = royal_finish_owned
+        card['can_dismantle'] = card['can_dismantle'] + can_dismantle
 
     repeat += 1
     if repeat == 30:
@@ -65,10 +65,10 @@ def get_card_owned_info_all(filtered_card_info):
         type_name_enter(card)
 
         new_card = card.copy()
-        new_card["basic_finish_owned"] = 0
-        new_card["glossy_finish_owned"] = 0
-        new_card["royal_finish_owned"] = 0
-        new_card["can_dismantle"] = 0
+        new_card['basic_finish_owned'] = 0
+        new_card['glossy_finish_owned'] = 0
+        new_card['royal_finish_owned'] = 0
+        new_card['can_dismantle'] = 0
 
         new_card = search_card_exists_all(new_card)
         card_owned.append(new_card)

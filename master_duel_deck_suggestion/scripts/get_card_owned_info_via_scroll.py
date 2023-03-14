@@ -96,10 +96,10 @@ def get_card_owned_info_via_scroll(filtered_card_info, card_owned=[], repeat=0, 
        
         new_card = card.copy()
 
-        new_card["basic_finish_owned"] = basic_finish_owned
-        new_card["glossy_finish_owned"] = glossy_finish_owned
-        new_card["royal_finish_owned"] = royal_finish_owned
-        new_card["can_dismantle"] = can_dismantle
+        new_card['basic_finish_owned'] = basic_finish_owned
+        new_card['glossy_finish_owned'] = glossy_finish_owned
+        new_card['royal_finish_owned'] = royal_finish_owned
+        new_card['can_dismantle'] = can_dismantle
 
         card_owned = update_card_owned(card_owned, new_card)
     else:

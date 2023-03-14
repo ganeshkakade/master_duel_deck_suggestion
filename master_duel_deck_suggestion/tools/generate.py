@@ -5,7 +5,8 @@ from master_duel_deck_suggestion.scripts.helpers import (
     get_filepath, 
     get_json_file, 
     write_to_file, 
-    truncate_file
+    truncate_file,
+    rand
 )
 from master_duel_deck_suggestion.scripts.constants import (
     TITLE_IMAGE_DEFECT,
@@ -17,6 +18,7 @@ from master_duel_deck_suggestion.scripts.constants import (
     OUT_OF_BOUND_DEFECT_LOG,
 
     CARD_INFO_JSON,
+    CARD_OWNED_INFO_JSON,
     FILTERED_CARD_INFO_JSON,
     SP_TITLE_FILTERED_CARD_INFO_JSON,
     LIMITED_FILTERED_CARD_INFO_JSON,
@@ -47,6 +49,7 @@ SEARCH_SELECTION_DEFECT_LOG_PATH = log_dir / SEARCH_SELECTION_DEFECT_LOG
 OUT_OF_BOUND_DEFECT_LOG_PATH = log_dir / OUT_OF_BOUND_DEFECT_LOG
 
 CARD_INFO_JSON_PATH = data_dir / CARD_INFO_JSON
+CARD_OWNED_INFO_JSON_PATH = data_dir / CARD_OWNED_INFO_JSON
 FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 SP_TITLE_FILTERED_CARD_INFO_JSON_PATH = data_dir / SP_TITLE_FILTERED_CARD_INFO_JSON
 LIMITED_FILTERED_CARD_INFO_JSON_PATH = data_dir / LIMITED_FILTERED_CARD_INFO_JSON
@@ -91,9 +94,23 @@ def dump_dummy_defects_log(json_filepath):
             title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
             search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
             out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
-            
+
+def dump_dummy_card_owned_info(json_filepath):
+    card_info = get_json_file(json_filepath)
+    if card_info:
+        for card in card_info:
+            basic_finish_owned, glossy_finish_owned, royal_finish_owned = [rand(0, 3) for _ in range(3)]
+            can_dismantle = rand(0, basic_finish_owned + glossy_finish_owned + royal_finish_owned)
+            card['basic_finish_owned'] = basic_finish_owned
+            card['glossy_finish_owned'] = glossy_finish_owned
+            card['royal_finish_owned'] = royal_finish_owned
+            card['can_dismantle'] = can_dismantle
+
+        write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_info))
+
 def main():
     dump_dummy_defects_log(FILTERED_CARD_INFO_JSON_PATH)
+    dump_dummy_card_owned_info(FILTERED_CARD_INFO_JSON_PATH)
     dump_sp_title_filtered_card_info(FILTERED_CARD_INFO_JSON_PATH)
     dump_limited_filtered_card_info(FILTERED_CARD_INFO_JSON_PATH, 0, 5)
     dump_diff_filtered_card_info(CARD_INFO_JSON_PATH, FILTERED_CARD_INFO_JSON_PATH)

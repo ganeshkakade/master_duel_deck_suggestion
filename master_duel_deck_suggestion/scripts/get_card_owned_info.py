@@ -185,16 +185,16 @@ def get_card_owned_info(filtered_card_info):
         if card_exists:
             basic_finish_owned, glossy_finish_owned, royal_finish_owned = get_card_finish_owned_info()
 
-            new_card["basic_finish_owned"] = basic_finish_owned
-            new_card["glossy_finish_owned"] = glossy_finish_owned
-            new_card["royal_finish_owned"] = royal_finish_owned
-            new_card["can_dismantle"] = 0
+            new_card['basic_finish_owned'] = basic_finish_owned
+            new_card['glossy_finish_owned'] = glossy_finish_owned
+            new_card['royal_finish_owned'] = royal_finish_owned
+            new_card['can_dismantle'] = 0
             card_owned.append(new_card)
         else:
-            new_card["basic_finish_owned"] = 0
-            new_card["glossy_finish_owned"] = 0
-            new_card["royal_finish_owned"] = 0
-            new_card["can_dismantle"] = 0
+            new_card['basic_finish_owned'] = 0
+            new_card['glossy_finish_owned'] = 0
+            new_card['royal_finish_owned'] = 0
+            new_card['can_dismantle'] = 0
             card_owned.append(new_card)
 
             if defect_type == TITLE_IMAGE_DEFECT:
