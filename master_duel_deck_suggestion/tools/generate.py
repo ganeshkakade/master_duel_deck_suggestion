@@ -91,29 +91,12 @@ def dump_dummy_defects_log(json_filepath):
             title_image_defect_logger.debug(f"{TITLE_IMAGE_DEFECT}: {card.get('name')}")
             search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
             out_of_bound_defect_logger.debug(f"{OUT_OF_BOUND_DEFECT}: {card.get('name')}")
-
-def dump_actual_search_selection_defect_log(json_filepath):
-    card_info = get_json_file(json_filepath)
-    if card_info:
-        truncate_file(SEARCH_SELECTION_DEFECT_LOG_PATH)
-
-        switch_window('masterduel')
-
-        if deck_window_exists():
-            set_sort_filters()
-            for card in card_info:
-                move_to_search()
-                type_name_enter(card)
-                if search_selection_avg_std(0, 0) < EXISTS_THRESHOLD:
-                    search_selection_defect_logger.debug(f"{SEARCH_SELECTION_DEFECT}: {card.get('name')}")
-
+            
 def main():
     dump_dummy_defects_log(FILTERED_CARD_INFO_JSON_PATH)
     dump_sp_title_filtered_card_info(FILTERED_CARD_INFO_JSON_PATH)
     dump_limited_filtered_card_info(FILTERED_CARD_INFO_JSON_PATH, 0, 5)
     dump_diff_filtered_card_info(CARD_INFO_JSON_PATH, FILTERED_CARD_INFO_JSON_PATH)
-   
-    # dump_actual_search_selection_defect_log(FILTERED_CARD_INFO_JSON_PATH)
 
 if __name__ == '__main__':
     try:

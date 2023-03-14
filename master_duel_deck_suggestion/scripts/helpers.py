@@ -143,3 +143,6 @@ def extract_number_from_string(s):
     else:
         number = 0
     return number
+
+def sort_by(arr, key):
+    return sorted(arr, key=lambda x: x.get(key))
