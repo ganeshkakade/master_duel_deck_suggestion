@@ -12,8 +12,7 @@ from master_duel_deck_suggestion.scripts.constants import (
 from master_duel_deck_suggestion.scripts.helpers import (
     get_json_file,
     write_to_file,
-    get_filepath,
-    sort_by
+    get_filepath
 )
 from master_duel_deck_suggestion.scripts.get_card_owned_info import (
     set_sort_filters,
@@ -89,7 +88,6 @@ def main():
         
         if deck_window_exists():
             set_sort_filters()
-            filtered_card_info = sort_by(filtered_card_info, "name")
             card_owned_info = get_card_owned_info_all(filtered_card_info)
             write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 

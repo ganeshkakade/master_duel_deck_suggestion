@@ -2,7 +2,7 @@ import json
 
 import requests
 
-from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs, write_to_file
+from master_duel_deck_suggestion.scripts.helpers import get_filepath, makedirs, write_to_file, sort_by
 from master_duel_deck_suggestion.scripts.constants import DECK_TYPE_INFO_JSON, FILTERED_DECK_TYPE_INFO_JSON
 from master_duel_deck_suggestion.tools.debugging import logger
 
@@ -32,6 +32,7 @@ def filter_deck_type_info(deck_type_info):
 
 def main():
     deck_type_info = get_deck_type_info()
+    deck_type_info = sort_by(deck_type_info, "name")
     write_to_file(DECK_TYPE_INFO_JSON_PATH, json.dumps(deck_type_info))
 
     filtered_deck_type_info = filter_deck_type_info(deck_type_info)
