@@ -162,3 +162,8 @@ cython_debug/
 # Custom folders
 /master_duel_deck_suggestion/logs
 /master_duel_deck_suggestion/data
+
+!debug.log
+!title_image_defect.log
+!search_selection_defect.log
+!out_of_bound_defect.log
