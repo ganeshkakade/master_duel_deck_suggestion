@@ -19,6 +19,8 @@ TITLE_IMAGE_DEFECT_JSON = "title_image_defect.json"
 SEARCH_SELECTION_DEFECT_JSON = "search_selection_defect.json"
 OUT_OF_BOUND_DEFECT_JSON = "out_of_bound_defect.json"
 
+OWNED_FILTER_MATCH = "owned_filter.png"
+
 FIXED_SCREEN_SIZE = {'width': 1920, 'height': 1080}
 
 SEARCH_COORDS = {'x': 1520, 'y': 205}
@@ -29,6 +31,7 @@ CLOSE_COORDS = {'x': 1855, 'y': 60}
 RESET_COORDS = {'x': 1775, 'y': 270}
 SORT_COORDS = {'x': 1585, 'y': 270}
 SORT_NO_OWNED_DESC_COORDS = {'x': 1185, 'y': 350}
+OWNED_FILTER_COORDS = {'x': 1790, 'y': 200}
 
 TITLE_SIZE = {'width': 1050, 'height': 40}
 TITLE_COORDS = {'x': 640, 'y': 155}

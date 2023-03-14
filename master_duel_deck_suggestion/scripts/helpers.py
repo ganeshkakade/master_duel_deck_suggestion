@@ -87,6 +87,9 @@ def get_region_size(size):
     h = h_size_ratio * size.get('height')
     return {'width': w, 'height': h}
 
+def get_image(file_path):
+    return Image.open(file_path)
+
 def get_json_file(file_path):
     if file_path.exists():
         try:

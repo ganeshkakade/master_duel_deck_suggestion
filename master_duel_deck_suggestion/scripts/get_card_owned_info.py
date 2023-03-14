@@ -16,7 +16,8 @@ from master_duel_deck_suggestion.scripts.helpers import (
     replace_non_ascii_with_space,
     contains_non_alphanumeric,
     sequence_matcher_ratio,
-    extract_number_from_string
+    extract_number_from_string,
+    get_image
 )
 from master_duel_deck_suggestion.scripts.constants import (
     S_TIME,
@@ -28,6 +29,7 @@ from master_duel_deck_suggestion.scripts.constants import (
     RESET_COORDS,
     SORT_COORDS,
     SORT_NO_OWNED_DESC_COORDS,
+    OWNED_FILTER_COORDS,
     
     TITLE_SIZE,
     TITLE_COORDS, 
@@ -51,6 +53,8 @@ from master_duel_deck_suggestion.scripts.constants import (
     FILTERED_CARD_INFO_JSON,
     CARD_OWNED_INFO_JSON,
 
+    OWNED_FILTER_MATCH,
+
     EXISTS_THRESHOLD
 )
 from master_duel_deck_suggestion.tools.debugging import (
@@ -61,13 +65,17 @@ from master_duel_deck_suggestion.tools.debugging import (
 )
 
 data_dir = get_filepath(__file__, "../data")
+match_data_dir = get_filepath(__file__, "../match_data")
 
 FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 CARD_OWNED_INFO_JSON_PATH = data_dir / CARD_OWNED_INFO_JSON
 
+OWNED_FILTER_MATCH_PATH = match_data_dir / OWNED_FILTER_MATCH
+
 search_region_coords = get_region_coords(SEARCH_COORDS)
 select_region_coords = get_region_coords(SELECT_COORDS)
 select_region_coords_delta = get_region_coords(SELECT_COORDS_DELTA)
+owned_filter_coords = get_region_coords(OWNED_FILTER_COORDS)
 
 title_region_size = get_region_size(TITLE_SIZE)
 title_region_coords = get_region_coords(TITLE_COORDS)
@@ -269,6 +277,13 @@ def set_sort_filters():
     pyautogui.click()
     time.sleep(S_TIME) # wait for sort window to close
 
+def set_owned_filters():
+    owned_filter_image = get_image(OWNED_FILTER_MATCH_PATH)
+    if owned_filter_image and not pyautogui.locateOnScreen(owned_filter_image, confidence=0.8):
+        pyautogui.moveTo(owned_filter_coords.get('x'), owned_filter_coords.get('y'))
+        pyautogui.click()
+        time.sleep(S_TIME) # wait for filter to reset
+
 def reset_all_filters():
     pyautogui.moveTo(reset_region_coords.get('x'), reset_region_coords.get('y'))
     pyautogui.click()
@@ -282,6 +297,7 @@ def main():
         
         if deck_window_exists():
             set_sort_filters()
+            set_owned_filters()
             card_owned_info = get_card_owned_info(filtered_card_info)
             write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 
