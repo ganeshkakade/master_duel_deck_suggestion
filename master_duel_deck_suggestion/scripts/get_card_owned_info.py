@@ -289,7 +289,7 @@ def reset_all_filters():
     pyautogui.click()
     time.sleep(S_TIME) # wait for filter to reset
 
-def main():
+def ui_configured():
     filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
     
     if filtered_card_info:
@@ -298,8 +298,14 @@ def main():
         if deck_window_exists():
             set_sort_filters()
             set_owned_filters()
-            card_owned_info = get_card_owned_info(filtered_card_info)
-            write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
+            return filtered_card_info
+    return []
+
+def main():
+    filtered_card_info = ui_configured()
+    if filtered_card_info:
+        card_owned_info = get_card_owned_info(filtered_card_info)
+        write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 
 if __name__ == '__main__':
     try:

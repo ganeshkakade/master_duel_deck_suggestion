@@ -1,7 +1,6 @@
 import json
 
 from master_duel_deck_suggestion.scripts.helpers import (
-    get_json_file,
     write_to_file,
     get_filepath,
     preprocess_and_ocr_image,
@@ -10,7 +9,6 @@ from master_duel_deck_suggestion.scripts.helpers import (
     sequence_matcher_ratio
 )
 from master_duel_deck_suggestion.scripts.constants import (
-    FILTERED_CARD_INFO_JSON,
     CARD_OWNED_INFO_JSON,
 
     EXISTS_THRESHOLD,
@@ -26,9 +24,6 @@ from master_duel_deck_suggestion.tools.debugging import (
     out_of_bound_defect_logger
 )
 from master_duel_deck_suggestion.scripts.get_card_owned_info import (
-    switch_window,
-    deck_window_exists,
-    set_sort_filters,
     search_selection_avg_std,
     take_title_screenshot,
     select_region_coords_delta,
@@ -36,12 +31,12 @@ from master_duel_deck_suggestion.scripts.get_card_owned_info import (
     get_card_finish_owned_info,
     get_card_can_dismantle_info,
     open_detail,
-    close_detail
+    close_detail,
+    ui_configured
 )
 
 data_dir = get_filepath(__file__, "../data")
 
-FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 CARD_OWNED_INFO_JSON_PATH = data_dir / CARD_OWNED_INFO_JSON
 
 def extract_text_from_title():
@@ -119,14 +114,11 @@ def get_card_owned_info_via_scroll(filtered_card_info, card_owned=[], repeat=0, 
     return get_card_owned_info_via_scroll(filtered_card_info, card_owned, repeat, dx, dy)
 
 def main():
-    filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
+    filtered_card_info = ui_configured()
     
     if filtered_card_info:
-        switch_window('masterduel')
-        
-        if deck_window_exists():
-            card_owned_info_via_scroll = get_card_owned_info_via_scroll(filtered_card_info)
-            write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info_via_scroll))
+        card_owned_info_via_scroll = get_card_owned_info_via_scroll(filtered_card_info)
+        write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info_via_scroll))
 
 if __name__ == '__main__':
     try:

@@ -5,19 +5,14 @@ from master_duel_deck_suggestion.tools.debugging import (
     logger
 )
 from master_duel_deck_suggestion.scripts.constants import (
-    FILTERED_CARD_INFO_JSON,
     CARD_OWNED_INFO_JSON,
     EXISTS_THRESHOLD
 )
 from master_duel_deck_suggestion.scripts.helpers import (
-    get_json_file,
     write_to_file,
     get_filepath
 )
 from master_duel_deck_suggestion.scripts.get_card_owned_info import (
-    set_sort_filters,
-    switch_window,
-    deck_window_exists,
     move_to_search,
     type_name_enter,
     search_selection_avg_std,
@@ -25,12 +20,12 @@ from master_duel_deck_suggestion.scripts.get_card_owned_info import (
     image_to_text_match,
     select_region_coords_delta,
     get_card_finish_owned_info,
-    get_card_can_dismantle_info
+    get_card_can_dismantle_info,
+    ui_configured
 )
 
 data_dir = get_filepath(__file__, "../data")
 
-FILTERED_CARD_INFO_JSON_PATH = data_dir / FILTERED_CARD_INFO_JSON
 CARD_OWNED_INFO_JSON_PATH = data_dir / CARD_OWNED_INFO_JSON
 
 def search_card_exists_all(card, repeat=0, dx=0, dy=0):
@@ -81,15 +76,11 @@ def get_card_owned_info_all(filtered_card_info):
     return card_owned
 
 def main():
-    filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
+    filtered_card_info = ui_configured()
     
     if filtered_card_info:
-        switch_window('masterduel')
-        
-        if deck_window_exists():
-            set_sort_filters()
-            card_owned_info = get_card_owned_info_all(filtered_card_info)
-            write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
+        card_owned_info = get_card_owned_info_all(filtered_card_info)
+        write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 
 if __name__ == '__main__':
     try:
