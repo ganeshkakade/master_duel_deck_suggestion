@@ -77,7 +77,7 @@ def dump_sp_title_filtered_card_info(json_filepath):
     card_info = get_json_file(json_filepath)
     if card_info:
         regex = re.compile(r'[^a-zA-Z0-9\s]+')
-        sp_title_filtered_card_info = [o for o in card_info if regex.search(o.get("name"))]
+        sp_title_filtered_card_info = [o for o in card_info if regex.search(o.get('name'))]
         write_to_file(SP_TITLE_FILTERED_CARD_INFO_JSON_PATH, json.dumps(sp_title_filtered_card_info))
 
 def dump_dummy_defects_log(json_filepath):

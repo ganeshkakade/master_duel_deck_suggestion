@@ -31,7 +31,7 @@ def get_card_info(result=[], page=1):
     return get_card_info(result, page)
 
 def filter_card_info(card_info):
-    filtered_card_info = [o for o in card_info if (not o.get("obtain") == []) and (not o.get("banStatus") == "Forbidden") and (not o.get("alternateArt") == True)]
+    filtered_card_info = [o for o in card_info if (not o.get('obtain') == []) and (not o.get('banStatus') == "Forbidden") and (not o.get('alternateArt') == True)]
     return filtered_card_info
 
 def main():
