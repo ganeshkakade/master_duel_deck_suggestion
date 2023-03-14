@@ -9,6 +9,7 @@ OUT_OF_BOUND_DEFECT_LOG = "out_of_bound_defect.log"
 
 CARD_INFO_JSON = "card_info.json"
 CARD_OWNED_INFO_JSON = "card_owned_info.json"
+DECK_TYPE_INFO_JSON = "deck_type_info.json"
 FILTERED_CARD_INFO_JSON = "filtered_card_info.json"
 SP_TITLE_FILTERED_CARD_INFO_JSON = "sp_title_filtered_card_info.json"
 LIMITED_FILTERED_CARD_INFO_JSON = "limited_filtered_card_info.json"

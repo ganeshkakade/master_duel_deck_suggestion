@@ -8,7 +8,7 @@ from master_duel_deck_suggestion.scripts.constants import CARD_INFO_JSON, FILTER
 from master_duel_deck_suggestion.tools.debugging import logger
 
 data_dir = get_filepath(__file__, "../data")
-CARD_INFO_DATA_PATH = data_dir / CARD_INFO_JSON
+CARD_INFO_JSON_PATH = data_dir / CARD_INFO_JSON
 FILTERED_CARD_INFO_DATA_PATH = data_dir / FILTERED_CARD_INFO_JSON
 
 makedirs(data_dir)
@@ -16,7 +16,7 @@ makedirs(data_dir)
 def get_card_info(result=[], page=1):
     logger.debug(f"page: {page}")
 
-    response = requests.get(f"https://www.masterduelmeta.com/api/v1/cards?cardSort=popRank&aggregate=search&page={page}&limit=2500")
+    response = requests.get(f"https://www.masterduelmeta.com/api/v1/cards?page={page}&limit=2500")
     response.raise_for_status()
     responseJSON = response.json()
 
@@ -36,7 +36,7 @@ def filter_card_info(card_info):
 
 def main():
     card_info = get_card_info()
-    write_to_file(CARD_INFO_DATA_PATH, json.dumps(card_info))
+    write_to_file(CARD_INFO_JSON_PATH, json.dumps(card_info))
 
     filtered_card_info = filter_card_info(card_info)
     write_to_file(FILTERED_CARD_INFO_DATA_PATH, json.dumps(filtered_card_info))
