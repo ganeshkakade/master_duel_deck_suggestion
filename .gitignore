@@ -160,5 +160,5 @@ cython_debug/
 #.idea/
 
 # Custom folders
-/logs/
-/data/
+/master_duel_deck_suggestion/logs/
+/master_duel_deck_suggestion/data/
