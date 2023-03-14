@@ -16,7 +16,8 @@ from master_duel_deck_suggestion.scripts.helpers import (
     replace_non_ascii_with_space,
     contains_non_alphanumeric,
     sequence_matcher_ratio,
-    extract_number_from_string
+    extract_number_from_string,
+    sort_by
 )
 from master_duel_deck_suggestion.scripts.constants import (
     S_TIME,
@@ -282,7 +283,7 @@ def main():
         
         if deck_window_exists():
             set_sort_filters()
-            filtered_card_info = sorted(filtered_card_info, key=lambda x: x.get('name'))
+            filtered_card_info = sort_by(filtered_card_info, "name")
             card_owned_info = get_card_owned_info(filtered_card_info)
             write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
 
