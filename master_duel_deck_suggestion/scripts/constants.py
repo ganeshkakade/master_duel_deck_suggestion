@@ -19,6 +19,9 @@ TITLE_IMAGE_DEFECT_JSON = "title_image_defect.json"
 SEARCH_SELECTION_DEFECT_JSON = "search_selection_defect.json"
 OUT_OF_BOUND_DEFECT_JSON = "out_of_bound_defect.json"
 
+DECK_TYPE_SUGGESTION_REPORT = "deck_type_suggestion_report.xlsx"
+DISMANTLABLE_EXTRA_CARD_REPORT = "dismantlable_extra_card_report.xlsx"
+
 OWNED_FILTER_MATCH = "owned_filter.png"
 
 FIXED_SCREEN_SIZE = {'width': 1920, 'height': 1080}
