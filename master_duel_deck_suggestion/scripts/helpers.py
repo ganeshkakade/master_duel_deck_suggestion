@@ -127,6 +127,9 @@ def truncate_file(file_path):
 def normalize_str(s):
     return re.sub(r'[^a-zA-Z0-9]', '', s).strip().lower()
 
+def alnum_str(s):
+    return re.sub(r'[^a-zA-Z0-9\s]', '', s).strip()
+
 def replace_non_ascii_with_space(s):
     printable_chars = set(string.printable)
     return ''.join(char if char in printable_chars else ' ' for char in s)
