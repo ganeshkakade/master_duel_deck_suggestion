@@ -76,7 +76,7 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
         deck_type_suggestion_workbook = xlsxwriter.Workbook(DECK_TYPE_SUGGESTION_REPORT_PATH)
 
         ### deck_type_suggestion_worksheet config
-        deck_type_suggestion_worksheet = deck_type_suggestion_workbook.add_worksheet("Deck Type Suggestions")
+        deck_type_suggestion_worksheet = deck_type_suggestion_workbook.add_worksheet("Deck Type Suggestion")
 
         row = 0
         col = 0
