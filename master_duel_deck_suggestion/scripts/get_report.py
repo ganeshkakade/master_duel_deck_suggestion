@@ -116,8 +116,10 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
 
             deck_type_worksheet.set_column(0, 0, 30)
             deck_type_worksheet.write(deck_type_row, deck_type_col, "Card Name", bold)
-            deck_type_worksheet.write(deck_type_row, deck_type_col + 1, "Size", bold)
-            deck_type_worksheet.write(deck_type_row, deck_type_col + 2, "Need", bold)
+            deck_type_worksheet.write(deck_type_row, deck_type_col + 1, "Type", bold)
+            deck_type_worksheet.write(deck_type_row, deck_type_col + 2, "Rarity", bold)
+            deck_type_worksheet.write(deck_type_row, deck_type_col + 3, "Size", bold)
+            deck_type_worksheet.write(deck_type_row, deck_type_col + 4, "Need", bold)
 
             deck_type_row += 1
             ### end
@@ -131,6 +133,7 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
                 card_owned = next((c for c in card_owned_info if c.get('_id') == card_id), {})
 
                 card_name = card.get('name')
+                card_type = card.get('type')
                 card_rarity = card.get('rarity')
                 card_owned_count = 0
 
@@ -151,8 +154,10 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
                     total_card_owned_count = total_card_owned_count + card_required_count
 
                 deck_type_worksheet.write(deck_type_row, deck_type_col, card_name)
-                deck_type_worksheet.write(deck_type_row, deck_type_col + 1, card_required_count)
-                deck_type_worksheet.write(deck_type_row, deck_type_col + 2, diff if diff > 0 else 0)
+                deck_type_worksheet.write(deck_type_row, deck_type_col + 1, card_type)
+                deck_type_worksheet.write(deck_type_row, deck_type_col + 2, card_rarity)
+                deck_type_worksheet.write(deck_type_row, deck_type_col + 3, card_required_count)
+                deck_type_worksheet.write(deck_type_row, deck_type_col + 4, diff if diff > 0 else 0)
                 deck_type_row += 1
 
             card_owned_percent = round(total_card_owned_count * 100 / total_card_required_count, 0)
