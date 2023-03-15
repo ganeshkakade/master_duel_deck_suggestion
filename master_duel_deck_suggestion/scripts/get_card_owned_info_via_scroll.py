@@ -64,8 +64,8 @@ def get_card(filtered_card_info, text):
 
 def update_card_owned(card_owned, card):
     for i in range(len(card_owned)):
-        if card_owned[i]['_id'] == card['_id']:
-            card_owned[i]['can_dismantle'] = card_owned[i]['can_dismantle'] + card['can_dismantle']
+        if card_owned[i].get('_id') == card.get('_id'):
+            card_owned[i]['can_dismantle'] = card_owned[i].get('can_dismantle', 0) + card.get('can_dismantle', 0)
             return card_owned
 
     card_owned.append(card)

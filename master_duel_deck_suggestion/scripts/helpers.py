@@ -142,10 +142,9 @@ def sequence_matcher_ratio(s1, s2):
 
 def extract_number_from_string(s):
     match = re.search(r'\d+', s)
+    number = 0
     if match:
         number = int(match.group())
-    else:
-        number = 0
     return number
 
 def sort_by(arr, key):

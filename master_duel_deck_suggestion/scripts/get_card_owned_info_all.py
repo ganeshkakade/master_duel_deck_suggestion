@@ -43,7 +43,7 @@ def search_card_exists_all(card, repeat=0, dx=0, dy=0):
         card['basic_finish_owned'] = basic_finish_owned
         card['glossy_finish_owned'] = glossy_finish_owned
         card['royal_finish_owned'] = royal_finish_owned
-        card['can_dismantle'] = card['can_dismantle'] + can_dismantle
+        card['can_dismantle'] = card.get('can_dismantle', 0) + can_dismantle
 
     repeat += 1
     if repeat == 30:
