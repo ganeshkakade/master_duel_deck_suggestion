@@ -48,6 +48,11 @@ def get_dismantlable_extra_card_report(card_info, card_owned_info):
     for card in card_info:
         card_id = card.get('_id')
         card_name = card.get('name')
+        card_ban_status = card.get('banStatus')
+        if card_ban_status == "Limited 1":
+            min_card = 1
+        if card_ban_status == "Limited 2":
+            min_card = 2
         extras = 0
         card_owned = next((c for c in card_owned_info if c.get('_id') == card_id), {})
 
