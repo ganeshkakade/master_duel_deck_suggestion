@@ -38,7 +38,9 @@ def get_dismantlable_extra_card_report(card_info, card_owned_info):
 
     dismantlable_extra_card_worksheet.set_column(0, 0, 30)
     dismantlable_extra_card_worksheet.write(row, col, "Card Name", bold)
-    dismantlable_extra_card_worksheet.write(row, col + 1, "Dismantlable Extras", bold)
+    dismantlable_extra_card_worksheet.write(row, col + 1, "Type", bold)
+    dismantlable_extra_card_worksheet.write(row, col + 2, "Rarity", bold)
+    dismantlable_extra_card_worksheet.write(row, col + 3, "Dismantlable Extras", bold)
 
     row += 1
     ### end
@@ -48,6 +50,8 @@ def get_dismantlable_extra_card_report(card_info, card_owned_info):
     for card in card_info:
         card_id = card.get('_id')
         card_name = card.get('name')
+        card_type = card.get('type')
+        card_rarity = card.get('rarity')
         card_ban_status = card.get('banStatus')
         if card_ban_status == "Limited 1":
             min_card = 1
@@ -67,11 +71,13 @@ def get_dismantlable_extra_card_report(card_info, card_owned_info):
                     extras = finish_owned - min_card
 
         dismantlable_extra_card_worksheet.write(row, col, card_name)
-        dismantlable_extra_card_worksheet.write(row, col + 1, extras)
+        dismantlable_extra_card_worksheet.write(row, col + 1, card_type)
+        dismantlable_extra_card_worksheet.write(row, col + 2, card_rarity)
+        dismantlable_extra_card_worksheet.write(row, col + 3, extras)
         row += 1
     
     dismantlable_extra_card_worksheet.write(row, col, "Total", bold)
-    dismantlable_extra_card_worksheet.write(row, col + 1, f"=SUM(B2:B{row})", bold)
+    dismantlable_extra_card_worksheet.write(row, col + 3, f"=SUM(D2:D{row})", bold)
 
     dismantlable_extra_card_workbook.close()
 
@@ -90,19 +96,24 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
 
         deck_type_suggestion_worksheet.set_column(0, 0, 15)
         deck_type_suggestion_worksheet.write(row, col, "Deck Name", bold)
-        deck_type_suggestion_worksheet.write(row, col + 1, "% Owned", bold) # UR, SR, R, N Need should be 0 for 100% Owned
-        deck_type_suggestion_worksheet.write(row, col + 2, "UR Need", bold)
-        deck_type_suggestion_worksheet.write(row, col + 3, "SR Need", bold)
-        deck_type_suggestion_worksheet.write(row, col + 4, "R Need", bold)
-        deck_type_suggestion_worksheet.write(row, col + 5, "N Need", bold)
+        deck_type_suggestion_worksheet.write(row, col + 1, "Power", bold)
+        deck_type_suggestion_worksheet.write(row, col + 2, "Avg Main Size", bold)
+        deck_type_suggestion_worksheet.write(row, col + 3, "% Owned", bold) # UR, SR, R, N Need should be 0 for 100% Owned
+        deck_type_suggestion_worksheet.write(row, col + 4, "UR Need", bold)
+        deck_type_suggestion_worksheet.write(row, col + 5, "SR Need", bold)
+        deck_type_suggestion_worksheet.write(row, col + 6, "R Need", bold)
+        deck_type_suggestion_worksheet.write(row, col + 7, "N Need", bold)
 
         row += 1
         ### end
 
         for deck in deck_type_info:
             deck_name = deck.get('name')
+            deck_power = deck.get('power')
+            deck_breakdown = deck.get('deckBreakdown')
+            deck_avg_main_size = deck_breakdown.get('avgMainSize')
 
-            deck_cards = deck.get('deckBreakdown').get('cards')
+            deck_cards = deck_breakdown.get('cards')
             filtered_deck_cards = [deck_card for deck_card in deck_cards if deck_card.get('aboveThresh') and deck_card.get('per') and deck_card.get('at')]
             
             total_card_need_ur_count = 0
@@ -172,11 +183,13 @@ def get_deck_type_suggestion_report(card_info, card_owned_info):
             card_need_n_value = total_card_need_n_count * craft_point
 
             deck_type_suggestion_worksheet.write(row, col, deck_name)
-            deck_type_suggestion_worksheet.write(row, col + 1, card_owned_percent)
-            deck_type_suggestion_worksheet.write(row, col + 2, card_need_ur_value)
-            deck_type_suggestion_worksheet.write(row, col + 3, card_need_sr_value)
-            deck_type_suggestion_worksheet.write(row, col + 4, card_need_r_value)
-            deck_type_suggestion_worksheet.write(row, col + 5, card_need_n_value)
+            deck_type_suggestion_worksheet.write(row, col + 1, deck_power)
+            deck_type_suggestion_worksheet.write(row, col + 2, deck_avg_main_size)
+            deck_type_suggestion_worksheet.write(row, col + 3, card_owned_percent)
+            deck_type_suggestion_worksheet.write(row, col + 4, card_need_ur_value)
+            deck_type_suggestion_worksheet.write(row, col + 5, card_need_sr_value)
+            deck_type_suggestion_worksheet.write(row, col + 6, card_need_r_value)
+            deck_type_suggestion_worksheet.write(row, col + 7, card_need_n_value)
             row += 1
 
         deck_type_suggestion_workbook.close()
