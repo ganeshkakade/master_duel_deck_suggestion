@@ -1,12 +1,12 @@
 # Master Duel Deck Suggestion (Yu-Gi-Oh!)
 
 ## Introduction
-Welcome to the Master Duel Deck Suggestion project! This tool helps suggest possible deck archetypes based on the cards you own in Yu-Gi-Oh! Master Duel. This way, you can have more fun playing with different deck types without spending any extra points or money.
+Welcome to the Master Duel Deck Suggestion project! This tool helps suggest possible deck archetypes based on the cards you own in Yu-Gi-Oh! Master Duel. This way, you can have more fun playing with different deck types without spending extra points or money.
 
 ## Features
 - Suggests popular, different, or fun deck archetypes based on the cards you own in-game.
 - Provides information on the missing cards and the points needed to build the standard deck of that archetype.
-- Provides information on which extra cards you can dismantle for more points. It recommends keeping plain foil cards instead of glossy or royal cards in exchange for points
+- Provides information on which extra cards you can dismantle for more points. It recommends keeping plain foil cards instead of glossy or royal cards in exchange for points.
 
 ## Usage
 
@@ -29,7 +29,7 @@ python setup.py install
 python master_duel_deck_suggestion\scripts\get_card_info.py
 python master_duel_deck_suggestion\scripts\get_deck_type_info.py
 ```
-4. Manually open ```Yu-Gi-Oh! Master Duel``` application, go to ```Game Settings -> General```, set Resolution to ```1920 x 1080``` and View Mode to ```Full Screen Mode```. (if ```1920 x 1080``` resolution option not available then anything near to that should be fine). Then go to ```Decks```, select ```Create New Deck -> Create New```.
+4. Manually open ```Yu-Gi-Oh! Master Duel``` application, go to ```Game Settings -> General```, set Resolution to ```1920 x 1080``` and View Mode to ```Full Screen Mode```. (if ```1920 x 1080``` resolution option not available, then anything near to that would be fine.) Then go to ```Decks```, select ```Create New Deck -> Create New```.
 5. Run the following command to get all updated cards owned information using GUI automation:
 ```python
 python master_duel_deck_suggestion\scripts\get_card_owned_info_all.py
