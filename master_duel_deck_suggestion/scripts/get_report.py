@@ -45,9 +45,8 @@ def get_dismantlable_extra_card_report(card_info, card_owned_info):
     row += 1
     ### end
 
-    min_card = 3
-
     for card in card_info:
+        min_card = 3
         card_id = card.get('_id')
         card_name = card.get('name')
         card_type = card.get('type')
