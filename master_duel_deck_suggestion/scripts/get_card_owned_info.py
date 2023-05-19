@@ -102,14 +102,14 @@ can_dismantle_region_coords = get_region_coords(CAN_DISMANTLE_COORDS)
 reset_region_coords = get_region_coords(RESET_COORDS)
 
 def image_to_text_match(card):
-    open_detail()
+    # open_detail()
     
     image = take_title_screenshot()
     card_name = card.get('name')
     name = normalize_str(card_name)
     text = normalize_str(preprocess_and_ocr_image(image))
 
-    close_detail()
+    # close_detail()
 
     if text and (text == name or text in name):
         return True
