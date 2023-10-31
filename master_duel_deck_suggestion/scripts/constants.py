@@ -36,11 +36,11 @@ SORT_COORDS = {'x': 1585, 'y': 270}
 SORT_NO_OWNED_DESC_COORDS = {'x': 1185, 'y': 350}
 OWNED_FILTER_COORDS = {'x': 1790, 'y': 200}
 
-FULL_TITLE_SIZE = {'width': 1050, 'height': 40}
-FULL_TITLE_COORDS = {'x': 640, 'y': 155}
+TITLE_SIZE = {'width': 1050, 'height': 40}
+TITLE_COORDS = {'x': 640, 'y': 155}
 
-TITLE_SIZE = {'width': 335, 'height': 30}
-TITLE_COORDS = {'x': 50, 'y': 125}
+# TITLE_SIZE = {'width': 335, 'height': 30}
+# TITLE_COORDS = {'x': 50, 'y': 125}
 
 CARD_SELECTION_SIZE = {'width': 85, 'height': 120}
 CARD_SELECTION_COORDS = {'x': 1320, 'y': 320}
