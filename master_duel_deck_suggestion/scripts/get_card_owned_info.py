@@ -290,8 +290,8 @@ def reset_all_filters():
     pyautogui.click()
     time.sleep(S_TIME) # wait for filter to reset
 
-def ui_configured():
-    filtered_card_info = get_json_file(FILTERED_CARD_INFO_JSON_PATH)
+def ui_configured(file_path):
+    filtered_card_info = get_json_file(file_path)
     
     if filtered_card_info:
         switch_window('masterduel')
@@ -303,7 +303,7 @@ def ui_configured():
     return []
 
 def main():
-    filtered_card_info = ui_configured()
+    filtered_card_info = ui_configured(FILTERED_CARD_INFO_JSON_PATH)
     if filtered_card_info:
         card_owned_info = get_card_owned_info(filtered_card_info)
         write_to_file(CARD_OWNED_INFO_JSON_PATH, json.dumps(card_owned_info))
